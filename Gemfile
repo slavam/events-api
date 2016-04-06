@@ -3,7 +3,10 @@ source 'https://rubygems.org'
 gem 'rails', github: "rails/rails"
 
 # Use sqlite3 as the database for Active Record
-gem 'sqlite3'
+# gem 'sqlite3'
+gem 'pg', '~> 0.18'
+
+gem 'geokit-rails'
 # Use Puma as the app server
 gem 'puma'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
