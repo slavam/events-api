@@ -13,7 +13,7 @@ development:
   <<: *default
   host:     <%= ENV['IP'] %>
   user: postgres
-  password: events
+  password: bejar
   database: events_development
   template: template0
 
@@ -25,7 +25,7 @@ test:
   database: events_test
   host:     <%= ENV['IP'] %>
   user: postgres
-  password: events
+  password: bejar
   template: template0
   
   
