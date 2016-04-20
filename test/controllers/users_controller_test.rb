@@ -10,23 +10,23 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should create user" do
-    assert_difference('User.count') do
-      post users_url, params: { user: {  } }
-    end
+  # test "should create user" do
+  #   assert_difference('User.count') do
+  #     post users_url, params: { user: {  } }
+  #   end
 
-    assert_response 201
-  end
+  #   assert_response 201
+  # end
 
   test "should show user" do
     get user_url(@user)
     assert_response :success
   end
 
-  test "should update user" do
-    patch user_url(@user), params: { user: {  } }
-    assert_response 200
-  end
+  # test "should update user" do
+  #   patch user_url(@user), params: { user: {  } }
+  #   assert_response 200
+  # end
 
   test "should destroy user" do
     assert_difference('User.count', -1) do

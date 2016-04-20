@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'rails', github: "rails/rails"
-
+gem 'bcrypt',               '3.1.7'
 # Use sqlite3 as the database for Active Record
 # gem 'sqlite3'
 gem 'pg', '~> 0.18'
