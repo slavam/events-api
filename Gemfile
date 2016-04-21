@@ -15,8 +15,6 @@ gem 'puma'
 # gem 'redis', '~> 3.0'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
-# Use ActiveModelSerializers to serialize JSON responses
-gem 'active_model_serializers', '~> 0.10.0.rc1'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
