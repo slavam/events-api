@@ -15,6 +15,17 @@ class User < ApplicationRecord
     participants.create(event_id: event.id, i_am_going: true)
   end
 
+  # был там
+  def visited(event)
+    if was_here?(event)
+      p = participants.find_by(events_id: events.id)
+      p.i_was_there = true
+      p.save
+    else
+      participants.create(event_id: event.id, i_was_there: true)
+    end
+  end
+
   # хотел или был
   def was_here?(event)
     events.include?(event)
