@@ -55,4 +55,13 @@ class UserTest < ActiveSupport::TestCase
     assert_not @user.valid?
   end
 
+  test "should partcipe and not participe a user" do
+    john = users(:john)
+    feast  = events(:feast)
+    assert_not john.was_here?(feast)
+    john.want_to_go(feast)
+    assert john.was_here?(feast)
+    # michael.unfollow(archer)
+    # assert_not michael.following?(archer)
+  end
 end

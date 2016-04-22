@@ -10,6 +10,17 @@ class User < ApplicationRecord
   # validates :password, presence: true, length: { minimum: 6 }
   validates :password, length: { minimum: 6 }
   
+  # хочу пойти
+  def want_to_go(event)
+    participants.create(event_id: event.id, i_am_going: true)
+  end
+
+  # хотел или был
+  def was_here?(event)
+    events.include?(event)
+  end
+  
+  
   # Returns the hash digest of the given string.
   def User.digest(string)
     cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
