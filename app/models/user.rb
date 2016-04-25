@@ -8,7 +8,7 @@ class User < ApplicationRecord
     uniqueness: { case_sensitive: false }
   has_secure_password
   # validates :password, presence: true, length: { minimum: 6 }
-  validates :password, length: { minimum: 6 }
+  # validates :password, presence: false #, length: { minimum: 6 }
   
   # хочу пойти
   def want_to_go(event)

@@ -19,7 +19,7 @@ class UsersController < ApplicationController
 
     if @user.save
       @user.remember_token
-      render json: @user, status: :created, location: @user
+      render json: @user, status: :created, location: @user, serializer: UserWithTokenSerializer
     else
       render json: @user.errors, status: :unprocessable_entity
     end
