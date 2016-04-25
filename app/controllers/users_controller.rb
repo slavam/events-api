@@ -10,8 +10,7 @@ class UsersController < ApplicationController
 
   # GET /users/1
   def show
-     render json: {message: "Show"}
-    # render json: @user
+    render json: @user
   end
 
   # POST /users
@@ -39,7 +38,7 @@ class UsersController < ApplicationController
     @user = User.find_by(email: params[:email])
     if !!@user.authenticate(params[:password])
       @user.remember_token
-      render json: @user, status: :created, location: @user
+      render json: @user, status: :created, location: @user, serializer: UserWithTokenSerializer
     else
       render json: @user.errors, status: :unprocessable_entity
     end
@@ -54,6 +53,10 @@ class UsersController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_user
       @user = User.find(params[:id])
+      token = request.env['HTTP_API_TOKEN']? request.env['HTTP_API_TOKEN'] : params[:api_token]
+      unless @user.check_token(token)
+        render json: {message: "Authentication problem"}, status: :unprocessable_entity
+      end
     end
 
     # Only allow a trusted parameter "white list" through.

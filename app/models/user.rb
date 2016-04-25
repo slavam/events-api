@@ -49,7 +49,19 @@ class User < ApplicationRecord
     update_attribute(:code_token, User.new_token)
   end
   
-  # def authenticate(token)
-  #   (self.code_token == token)
-  # end
+  def check_token(token)
+    (self.code_token == token)
+  end
+  
+  def rating
+    0
+  end
+  
+  def created_events
+    0
+  end
+  
+  def participated_events
+    0
+  end
 end

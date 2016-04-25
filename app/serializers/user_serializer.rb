@@ -1,3 +1,6 @@
 class UserSerializer < ActiveModel::Serializer
-  attributes :id, :first_name, :last_name, :email, :phone,  :city, :code_token
+  attributes :id, :first_name, :last_name, :picture, :phone, :email, 
+    :website, :fb_url, :vk_url, :ok_url, :city, :country, 
+    :rating, :created_events, :participated_events
+     
 end
