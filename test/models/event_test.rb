@@ -2,7 +2,7 @@ require 'test_helper'
 
 class EventTest < ActiveSupport::TestCase
   def setup
-    @event = Event.new(name: "Example Event")
+    @event = Event.new(name: "Example Event", date_start: "2017-01-01")
   end
 
   test "should be valid" do
@@ -14,4 +14,8 @@ class EventTest < ActiveSupport::TestCase
     assert_not @event.valid?
   end
 
+  test "date_start should be present" do
+    @event.date_start = nil
+    assert_not @event.valid?
+  end
 end

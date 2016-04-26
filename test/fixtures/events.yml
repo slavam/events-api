@@ -11,3 +11,4 @@
 # column: value
 feast:
     name: Music Fest
+    date_start: 2017-01-01
