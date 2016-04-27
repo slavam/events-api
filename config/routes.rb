@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   put 'login', to: 'users#login'
+  put 'i_want_to_go/:id', to: 'users#i_want_to_go'
   post 'registration', to: 'users#create'
   resources :users
   resources :events

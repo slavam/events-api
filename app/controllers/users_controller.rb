@@ -1,5 +1,7 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :update, :destroy]
+  before_action :set_user, only: [:show, :update, :destroy, :i_want_to_go]
+  before_action :set_event, only: :i_want_to_go
+  
 
   # GET /users
   def index
@@ -33,6 +35,11 @@ class UsersController < ApplicationController
       render json: @user.errors, status: :unprocessable_entity
     end
   end
+
+  def i_want_to_go
+    @user.want_to_go(@event)
+    render json: @user
+  end
   
   def login
     @user = User.find_by(email: params[:email])
@@ -51,6 +58,10 @@ class UsersController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
+    def set_event
+      @event = Event.find(params[:event_id])
+    end
+    
     def set_user
       @user = User.find(params[:id])
       token = request.env['HTTP_API_TOKEN']? request.env['HTTP_API_TOKEN'] : params[:api_token]
