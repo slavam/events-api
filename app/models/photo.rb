@@ -11,7 +11,8 @@ class Photo < ApplicationRecord
       "image/"+extention
     end
   end
-  
+
+  has_many :likings  
   belongs_to :user
   belongs_to :event
   mount_uploader :picture, PictureUploader
