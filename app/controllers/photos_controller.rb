@@ -46,6 +46,7 @@ class PhotosController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def photo_params
-      params.fetch(:photo, {})
+      params.permit(:picture)
+      # params.fetch(:photo, {})
     end
 end
