@@ -4,6 +4,7 @@ class Event < ApplicationRecord
   belongs_to :user
   has_many :taggings
   has_many :tags, through: :taggings
+  has_many :photos
   validates :name, presence: true
   validates :date_start, presence: true
   validates :user_id, presence: true

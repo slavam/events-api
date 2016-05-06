@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :photos
   resources :tags
   put 'login', to: 'users#login'
   put 'i_want_to_go/:id', to: 'users#i_want_to_go'
