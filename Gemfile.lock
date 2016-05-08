@@ -1,4 +1,10 @@
 GIT
+  remote: git://github.com/jonatack/will_paginate.git
+  revision: 1ca68ab6c31f874349f17f2cb458749aa4ef81ba
+  specs:
+    will_paginate (3.0.4)
+
+GIT
   remote: git://github.com/rails/rails.git
   revision: 31f6bb23929b1fafdc3390b85113dcbcd4b3203a
   specs:
@@ -68,6 +74,8 @@ GEM
       railties (>= 4.0)
     arel (7.0.0)
     bcrypt (3.1.7)
+    bootstrap-will_paginate (0.0.10)
+      will_paginate
     builder (3.2.2)
     byebug (8.2.2)
     carrierwave (0.10.0)
@@ -262,6 +270,7 @@ PLATFORMS
 DEPENDENCIES
   active_model_serializers (~> 0.10.0.rc1)
   bcrypt (= 3.1.7)
+  bootstrap-will_paginate (= 0.0.10)
   byebug
   carrierwave (= 0.10.0)
   fog (= 1.36.0)
@@ -274,6 +283,7 @@ DEPENDENCIES
   spring
   spring-watcher-listen (~> 2.0.0)
   tzinfo-data
+  will_paginate!
 
 BUNDLED WITH
    1.11.2

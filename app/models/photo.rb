@@ -18,6 +18,10 @@ class Photo < ApplicationRecord
   mount_uploader :picture, PictureUploader
   validate  :picture_size
 
+  def liked?(user)
+    likings.include?(user)
+  end
+  
   def image_data(extention, data)
     # decode data and create stream on them
     io = CarrierStringIO.new(Base64.decode64(data))

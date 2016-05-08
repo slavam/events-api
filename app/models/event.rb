@@ -10,6 +10,10 @@ class Event < ApplicationRecord
   validates :date_start, presence: true
   validates :user_id, presence: true
   
+  def participant?(user)
+    users.include?(user)
+  end
+  
   def count_participants
     users.count
   end

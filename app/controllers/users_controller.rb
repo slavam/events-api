@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   # GET /users
   def index
     @users = User.all
-
+    # @feed_items = current_user.feed.paginate(page: params[:page])
     render json: @users
   end
 
