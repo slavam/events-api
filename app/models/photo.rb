@@ -16,9 +16,10 @@ class Photo < ApplicationRecord
   belongs_to :user
   belongs_to :event
   mount_uploader :picture, PictureUploader
+  default_scope -> { order(created_at: :desc) }
   validate  :picture_size
 
-  def liked?(user)
+  def liked?
     likings.include?(user)
   end
   

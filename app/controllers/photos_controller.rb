@@ -1,4 +1,6 @@
 class PhotosController < ApplicationController
+  before_action :set_event, only: [:create]
+  
   before_action :set_photo, only: [:show, :update, :destroy]
 
   # GET /photos
@@ -15,10 +17,13 @@ class PhotosController < ApplicationController
 
   # POST /photos
   def create
-    @photo = Photo.new(photo_params)
+    extention = params[:picture].match(/\/(.+);/)[1]
+    data = params[:picture].match(/,(.+)/)[1]
+    @photo = Photo.new(user_id: params[:user_id],event_id: params[:event_id])
+    @photo.image_data(extention, data)
 
     if @photo.save
-      render json: @photo, status: :created, location: @photo
+      render json: @event.photos.paginate(page: 1) #, per_page: 10) #, status: :created, location: @photo
     else
       render json: @photo.errors, status: :unprocessable_entity
     end
@@ -40,13 +45,17 @@ class PhotosController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
+    def set_event
+      @event = Event.find(params[:event_id])
+    end
+    
     def set_photo
       @photo = Photo.find(params[:id])
     end
 
     # Only allow a trusted parameter "white list" through.
     def photo_params
-      params.permit(:picture)
+      params.permit(:picture, :event_id, :user_id)
       # params.fetch(:photo, {})
     end
 end
