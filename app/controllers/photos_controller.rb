@@ -1,5 +1,6 @@
 class PhotosController < ApplicationController
   before_action :set_event, only: [:create]
+  before_action :set_user, only: [:create]
   
   before_action :set_photo, only: [:show, :update, :destroy]
 
