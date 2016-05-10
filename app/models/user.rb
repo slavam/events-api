@@ -1,3 +1,4 @@
+require 'carrier_string_io'
 class User < ApplicationRecord
   has_many :participants
   has_many :events, through: :participants
@@ -10,8 +11,18 @@ class User < ApplicationRecord
     format: { with: VALID_EMAIL_REGEX },
     uniqueness: { case_sensitive: false }
   has_secure_password
+  mount_uploader :picture, PictureUploader
   # validates :password, presence: true, length: { minimum: 6 }
   # validates :password, presence: false #, length: { minimum: 6 }
+  
+  def image_data(extention, data)
+    # decode data and create stream on them
+    io = CarrierStringIO.new(Base64.decode64(data))
+    io.extention = extention
+
+    # this will do the thing (photo is mounted carrierwave uploader)
+    self.picture = io
+  end
   
   # хочу пойти
   def want_to_go(event)

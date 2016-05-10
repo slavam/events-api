@@ -1,7 +1,8 @@
 class Event < ApplicationRecord
   has_many :participants
   has_many :users, through: :participants
-  belongs_to :user
+  # belongs_to :user
+  belongs_to :author, :class_name => 'User', foreign_key: 'user_id'
   has_many :taggings
   has_many :tags, through: :taggings
   has_many :photos

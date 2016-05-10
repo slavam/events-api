@@ -1,4 +1,5 @@
 class EventsController < ApplicationController
+  before_action :set_user, only: [:create]
   before_action :set_event, only: [:show, :update, :destroy]
 
   # GET /events
@@ -15,7 +16,12 @@ class EventsController < ApplicationController
 
   # POST /events
   def create
-    @event = Event.new(event_params)
+    # @event = Event.new(event_params)
+    @event = Event.new(name: params[:name], description: params[:description], 
+      author: @user, date_start: params[:date_time_start], date_end: params[:date_time_end],
+      country: params[:location][:country], city: params[:location][:city], 
+      address: params[:location][:address], lat: params[:location][:lat], lng: params[:location][:lng],)
+    
 
     if @event.save
       render json: @event, status: :created, location: @event

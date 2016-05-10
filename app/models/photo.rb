@@ -1,16 +1,17 @@
+require 'carrier_string_io'
 class Photo < ApplicationRecord
-  class CarrierStringIO < StringIO
-    attr_accessor :extention
-    def original_filename
-      # "photo.png"
-      "photo."+extention
-    end
+  # class CarrierStringIO < StringIO
+  #   attr_accessor :extention
+  #   def original_filename
+  #     # "photo.png"
+  #     "photo."+extention
+  #   end
   
-    def content_type
-      # "image/png"
-      "image/"+extention
-    end
-  end
+  #   def content_type
+  #     # "image/png"
+  #     "image/"+extention
+  #   end
+  # end
 
   has_many :likings  
   belongs_to :user

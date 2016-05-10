@@ -18,7 +18,7 @@ class UsersController < ApplicationController
   # POST /users
   def create
     @user = User.new(user_params)
-
+    
     if @user.save
       @user.remember_token
       render json: @user, status: :created, location: @user, serializer: UserWithTokenSerializer
@@ -29,6 +29,9 @@ class UsersController < ApplicationController
 
   # PATCH/PUT /users/1
   def update
+    extention = params[:user][:picture].match(/\/(.+);/)[1]
+    data = params[:user][:picture].match(/,(.+)/)[1]
+    @user.image_data(extention, data)
     if @user.update(user_params)
       render json: @user
     else
@@ -62,19 +65,17 @@ class UsersController < ApplicationController
       @event = Event.find(params[:event_id])
     end
     
-    def set_user
-      @user = User.find(params[:id])
-      token = request.env['HTTP_API_TOKEN']? request.env['HTTP_API_TOKEN'] : params[:api_token]
-      unless @user.check_token(token)
-        render json: {message: "Authentication problem"}, status: :unprocessable_entity
-      end
-    end
+    # def set_user
+    #   @user = User.find(params[:id])
+    #   token = request.env['HTTP_API_TOKEN']? request.env['HTTP_API_TOKEN'] : params[:api_token]
+    #   unless @user.check_token(token)
+    #     render json: {message: "Authentication problem"}, status: :unprocessable_entity
+    #   end
+    # end
 
     # Only allow a trusted parameter "white list" through.
     def user_params
-      # params.fetch(:user, {})
-      params.permit(:first_name, :last_name, :email, 
-        :phone, :website, :fb_url, :vk_url, :ok_url, :city, :country,
-        :password)
+      params[:user]? params.require(:user).permit(:first_name, :last_name, :email, 
+        :phone, :website, :fb_url, :vk_url, :ok_url, :city, :country, :password) : {}
     end
 end
