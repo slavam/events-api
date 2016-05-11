@@ -1,6 +1,7 @@
 class PhotosController < ApplicationController
-  before_action :set_event, only: [:create]
-  before_action :set_user, only: [:create]
+  before_action :set_event, only: [:create, :update]
+  before_action :set_user, only: [:create, :update]
+  before_action :set_photo, only: [:update]
   
   before_action :set_photo, only: [:show, :update, :destroy]
 
@@ -32,10 +33,19 @@ class PhotosController < ApplicationController
 
   # PATCH/PUT /photos/1
   def update
-    if @photo.update(photo_params)
+    if params[:like]
+      if params[:like] == true
+        @photo.like_photo(@user)
+      else
+        @photo.dislike_photo(@user)
+      end
       render json: @photo
     else
-      render json: @photo.errors, status: :unprocessable_entity
+      if @photo.update(photo_params)
+        render json: @photo
+      else
+        render json: @photo.errors, status: :unprocessable_entity
+      end
     end
   end
 

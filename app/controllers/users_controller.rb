@@ -29,9 +29,11 @@ class UsersController < ApplicationController
 
   # PATCH/PUT /users/1
   def update
-    extention = params[:user][:picture].match(/\/(.+);/)[1]
-    data = params[:user][:picture].match(/,(.+)/)[1]
-    @user.image_data(extention, data)
+    if params[:user] and params[:user][:picture]
+      extention = params[:user][:picture].match(/\/(.+);/)[1]
+      data = params[:user][:picture].match(/,(.+)/)[1]
+      @user.image_data(extention, data)
+    end
     if @user.update(user_params)
       render json: @user
     else

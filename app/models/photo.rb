@@ -1,27 +1,26 @@
 require 'carrier_string_io'
 class Photo < ApplicationRecord
-  # class CarrierStringIO < StringIO
-  #   attr_accessor :extention
-  #   def original_filename
-  #     # "photo.png"
-  #     "photo."+extention
-  #   end
-  
-  #   def content_type
-  #     # "image/png"
-  #     "image/"+extention
-  #   end
-  # end
 
   has_many :likings  
+  has_many :users, :through => :likings
   belongs_to :user
   belongs_to :event
   mount_uploader :picture, PictureUploader
   default_scope -> { order(created_at: :desc) }
   validate  :picture_size
 
-  def liked?
-    likings.include?(user)
+  def like_photo(user)
+    self.likings.create(user: user) unless self.liked?(user)
+  end
+  
+  def dislike_photo(user)
+    if self.liked?(user)
+      self.likings.delete(user.id)
+    end
+  end
+  
+  def liked?(user)
+    users.include?(user)
   end
   
   def image_data(extention, data)
