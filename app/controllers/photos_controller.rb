@@ -46,12 +46,12 @@ class PhotosController < ApplicationController
   # PATCH/PUT /photos/1
   def update
     if params[:like]
-      if params[:like] == true
+      if params[:like] == "true"
         @photo.like_photo(@user)
       else
         @photo.dislike_photo(@user)
       end
-      render json: @photo
+      render json: {} #@photo
     else
       if @photo.update(photo_params)
         render json: @photo

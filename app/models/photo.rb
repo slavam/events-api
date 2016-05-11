@@ -12,12 +12,13 @@ class Photo < ApplicationRecord
     likings.count
   end
   def like_photo(user)
-    self.likings.create(user: user) unless self.liked?(user)
+    self.likings.create!(user: user) unless self.liked?(user)
   end
   
   def dislike_photo(user)
     if self.liked?(user)
-      self.likings.destroy(user.id)
+      l = Liking.where("photo_id=? and user_id=?", id, user.id ).first
+      l.destroy
     end
   end
   
