@@ -1,15 +1,27 @@
 class PhotosController < ApplicationController
-  before_action :set_event, only: [:create, :update]
-  before_action :set_user, only: [:create, :update]
+  before_action :set_event, only: [:create, :update, :index]
+  before_action :set_user, only: [:create, :update, :index]
   before_action :set_photo, only: [:update]
   
   before_action :set_photo, only: [:show, :update, :destroy]
 
   # GET /photos
   def index
-    @photos = Photo.all
-
-    render json: @photos.paginate(page: params[:page], per_page: 5)
+    per_page ||= params[:per_page]
+    @photos = @event.photos
+    ps = []
+    @photos.paginate(page: params[:page], per_page: per_page).each do|ph| 
+      ps << {id: ph.id, event_id: ph.event_id, is_liked: ph.liked?(@user), count_likes: ph.likings.count,
+      picture: ph.picture.url}
+    end
+    
+    last_page = ((@photos.count - per_page.to_i * params[:page].to_i) <= 0)
+    render json: {photos: ps, lastPage: last_page}
+    # render json: {photos: @photos.paginate(page: params[:page], per_page: per_page), lastPage: last_page}
+    # render json: @photos.paginate(page: params[:page], per_page: per_page), serializer: ActiveModel::Serializer::ArraySerializer, each_serializer: Photo2Serializer
+    # render json: @photos.paginate(page: params[:page], per_page: per_page)
+    # render json: @photos.paginate(page: params[:page], per_page: per_page), serializer: ActiveModel::Serializer::ArraySerializer, each_serializer: Photo2Serializer
+    # render :json => @photos  , serializer: Photo2Serializer
   end
 
   # GET /photos/1

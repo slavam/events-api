@@ -1,6 +1,5 @@
 require 'carrier_string_io'
 class Photo < ApplicationRecord
-
   has_many :likings  
   has_many :users, :through => :likings
   belongs_to :user
@@ -9,6 +8,9 @@ class Photo < ApplicationRecord
   default_scope -> { order(created_at: :desc) }
   validate  :picture_size
 
+  def count_likes
+    likings.count
+  end
   def like_photo(user)
     self.likings.create(user: user) unless self.liked?(user)
   end

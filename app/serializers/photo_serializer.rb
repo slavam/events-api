@@ -8,8 +8,8 @@ class PhotoSerializer < ActiveModel::Serializer
     object.liked?(@user)
   end
   
-  def count_likes
-    object.likings.count
-  end
+  # def count_likes
+  #   object.likings.count
+  # end
   
 end
