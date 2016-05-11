@@ -1,6 +1,6 @@
 class UserSerializer < ActiveModel::Serializer
   attributes :id, :first_name, :last_name, :picture, :phone, :email, 
-    :website, :fb_url, :vk_url, :ok_url, :city, :country, 
+    :website, :fb_url, :vk_url, :ok_url, :city, :country, :created_at,
     :rating, :count_created_events, :count_participated_events, :created_events, :participated_events
   has_many :events, key: "participated_events"
   def count_created_events
