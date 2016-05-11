@@ -15,7 +15,7 @@ class Photo < ApplicationRecord
   
   def dislike_photo(user)
     if self.liked?(user)
-      self.likings.delete(user.id)
+      self.likings.destroy(user.id)
     end
   end
   
