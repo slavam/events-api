@@ -8,7 +8,7 @@ class PhotosController < ApplicationController
   def index
     @photos = Photo.all
 
-    render json: @photos
+    render json: @photos.paginate(page: params[:page], per_page: 5)
   end
 
   # GET /photos/1
