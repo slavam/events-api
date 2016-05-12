@@ -70,6 +70,8 @@ class PhotosController < ApplicationController
       Photo.find(params[:id]).destroy
       # @photo.destroy
       render json: {message: "deleted"}
+    else
+      render json: {message: "Удалять может только автор события"}
     end
   end
 

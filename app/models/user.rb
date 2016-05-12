@@ -26,7 +26,7 @@ class User < ApplicationRecord
   
   # хочу пойти
   def want_to_go(event)
-    participants.create(event_id: event.id, i_am_going: true)
+    participants.create(event_id: event.id, i_am_going: true) # unless self.events.include?(event)
   end
 
   # был там

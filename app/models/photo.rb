@@ -1,6 +1,7 @@
 require 'carrier_string_io'
 class Photo < ApplicationRecord
-  has_many :likings  
+  has_many :likings, :dependent => :destroy
+
   has_many :users, :through => :likings
   belongs_to :user
   belongs_to :event
