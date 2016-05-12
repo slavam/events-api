@@ -5,9 +5,16 @@ class UsersController < ApplicationController
 
   # GET /users
   def index
-    @users = @event.users.paginate(page: params[:page])
-    # @feed_items = current_user.feed.paginate(page: params[:page])
-    render json: @users
+    page = params[:page]? params[:page].to_i : 1
+    per_page= params[:per_page]? params[:per_page].to_i : 25
+    us = []
+    users = @event.users
+    users.paginate(page: page, per_page: per_page).each do|u| 
+      us << user_to_hash(u)
+    end
+    last_page = ((users.count - per_page * page) <= 0)
+    render json: {participants: us, lastPage: last_page}
+    # params[:coordinates]
   end
 
   # GET /users/1

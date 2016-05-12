@@ -17,4 +17,13 @@ class ApplicationController < ActionController::API
       render json: {message: "Authentication problem"}, status: :unprocessable_entity
     end
   end
+  
+  def user_to_hash(user)
+    {id: user.id, created_at: user.created_at, first_name: user.first_name,
+      last_name: user.last_name, picture: user.picture.url, phone: user.phone,
+      email: user.email, website: user.website, fb_url: user.fb_url, vk_url: user.vk_url,
+      ok_url: user.ok_url, city: user.city, country: user.country, rating: user.rating,
+      count_created_events: Event.where(user_id: user.id).count, 
+      count_participated_events: user.count_participated_events}
+  end
 end
