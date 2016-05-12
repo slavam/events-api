@@ -39,11 +39,12 @@ class EventsController < ApplicationController
 
   # PATCH/PUT /events/1
   def update
-    if params[:event][:is_participating]
+    if params[:event] and params[:event][:is_participating]
       @user.want_to_go(@event)
       @event.is_participating = true
     end
-    if @event.update(event_params)
+    if @event.update(event_params) and @event.update(location_params)
+      @event.is_participating = @event.participant?(@user)
       render json: @event
     else
       render json: @event.errors, status: :unprocessable_entity
@@ -64,7 +65,10 @@ class EventsController < ApplicationController
     # Only allow a trusted parameter "white list" through.
     def event_params
       # params.fetch(:event, {})
-      params.permit(:name, :description, :date_start, :date_end, :country,
-        :city, :address, :lat, :lng)
+      params[:event]? params.require(:event).permit(:name, :description, :date_start, :date_end) : {} #, :country, :city, :address, :lat, :lng)
+    end
+    
+    def location_params
+      params[:location]? params.require(:location).permit(:country, :city, :address, :lat, :lng) : {}
     end
 end

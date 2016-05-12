@@ -2,6 +2,9 @@ class EventSerializer < ActiveModel::Serializer
   attributes :id, :name, :description, :date_start, :date_end, :is_participating, :location, :created_at, :count_participants, :count_comments
   has_many :tags
   has_one :author
+  has_many :comments
+  has_many :photos
+  has_many :users, key: "participants"
   #:country, :city, :address, :lat, :lng
   # has_one :user, key: "author"
   # def is_participating
