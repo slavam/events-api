@@ -17,7 +17,7 @@ class EventsController < ApplicationController
         date_start: e.date_start, date_end: e.date_end, is_participating: e.participant?(@user),
         location: {country: e.country, city: e.city, address: e.address, lat: e.lat, lng: e.lng},
         created_at: e.created_at, count_participants: e.count_participants, count_comments: e.comments.count,
-        tags: [], author: user_to_hash(e.author)}
+        tags: nil, author: user_to_hash(e.author), photos: photos_as_array(e, per_page)}
     end
     last_page = ((events.count - per_page * page) <= 0)
     render json: {events: es, lastPage: last_page}
@@ -96,5 +96,18 @@ class EventsController < ApplicationController
         ok_url: user.ok_url, city: user.city, country: user.country, rating: user.rating,
         count_created_events: Event.where(user_id: user.id).count, 
         count_participated_events: user.count_participated_events}
+    end
+    
+    def photos_as_array(event,per_page)
+      if params[:photos] == '1'
+        ps = []
+        event.photos.paginate(page: 1, per_page: per_page).each do|ph| 
+          ps << {id: ph.id, event_id: ph.event_id, is_liked: ph.liked?(@user), count_likes: ph.likings.count,
+          picture: ph.picture.url}
+        end
+        ps
+      else
+        nil
+      end
     end
 end
