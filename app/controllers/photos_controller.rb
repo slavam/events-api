@@ -63,7 +63,6 @@ class PhotosController < ApplicationController
 
   # DELETE /photos/1
   def destroy
-    # render json: @user
     if @user.id == @event.author.id # AK Только владелец события 2016.05.11
       # @photo.remove_picture!
       # @photo.save!

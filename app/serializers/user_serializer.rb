@@ -7,9 +7,9 @@ class UserSerializer < ActiveModel::Serializer
     Event.where(user_id: object.id).count
   end
   
-  def count_participated_events
-    object.events.count
-  end
+  # def count_participated_events
+  #   object.events.count
+  # end
   
   def created_events
     Event.where(user_id: object.id)

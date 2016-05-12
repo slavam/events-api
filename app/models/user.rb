@@ -71,11 +71,7 @@ class User < ApplicationRecord
     0
   end
   
-  def created_events
-    0
-  end
-  
-  def participated_events
-    0
+  def count_participated_events
+    events.count
   end
 end
