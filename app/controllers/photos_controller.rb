@@ -1,13 +1,13 @@
 class PhotosController < ApplicationController
-  before_action :set_event, only: [:create, :update, :index]
-  before_action :set_user, only: [:create, :update, :index]
+  before_action :set_event, only: [:create, :update, :index, :destroy]
+  before_action :set_user, only: [:create, :update, :index, :destroy]
   before_action :set_photo, only: [:update]
   
   before_action :set_photo, only: [:show, :update, :destroy]
 
   # GET /photos
   def index
-    per_page ||= params[:per_page]
+    per_page = params[:per_page]? params[:per_page].to_i : 25
     @photos = @event.photos
     ps = []
     @photos.paginate(page: params[:page], per_page: per_page).each do|ph| 
@@ -63,7 +63,14 @@ class PhotosController < ApplicationController
 
   # DELETE /photos/1
   def destroy
-    @photo.destroy
+    # render json: @user
+    if @user.id == @event.author.id # AK Только владелец события 2016.05.11
+      # @photo.remove_picture!
+      # @photo.save!
+      Photo.find(params[:id]).destroy
+      # @photo.destroy
+      render json: {message: "deleted"}
+    end
   end
 
   private

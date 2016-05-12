@@ -5,7 +5,7 @@ class PictureUploader < CarrierWave::Uploader::Base
 
   def clear_uploader
     @file = @filename = @original_filename = @cache_id = @version = @storage = nil
-    model.send(:write_attribute, mounted_as, nil)
+    model.send(:write_attribute, mounted_as, nil) unless model.destroyed?
   end
 
   # Include RMagick or MiniMagick support:
