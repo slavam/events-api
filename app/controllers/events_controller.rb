@@ -16,17 +16,24 @@ class EventsController < ApplicationController
 
   # POST /events
   def create
-    # @event = Event.new(event_params)
-    @event = Event.new(name: params[:name], description: params[:description], 
-      author: @user, date_start: params[:date_time_start], date_end: params[:date_time_end],
-      country: params[:location][:country], city: params[:location][:city], 
-      address: params[:location][:address], lat: params[:location][:lat], lng: params[:location][:lng],)
-    
-
-    if @event.save
-      render json: @event, status: :created, location: @event
+    if (params[:event] and params[:location] and params[:event][:name] and params[:event][:description] \
+      and params[:event][:date_time_start] and params[:event][:date_time_end] \
+      and params[:location][:country] and params[:location][:city] \
+      and params[:location][:address] and params[:location][:lat] and params[:location][:lng])
+      @event = Event.new(name: params[:event][:name], description: params[:event][:description], 
+        author: @user, date_start: params[:event][:date_time_start], date_end: params[:event][:date_time_end],
+        country: params[:location][:country], city: params[:location][:city], 
+        address: params[:location][:address], lat: params[:location][:lat], lng: params[:location][:lng],)
+  
+      if @event.save
+        @user.want_to_go(@event)
+        @event.is_participating = true
+        render json: @event, status: :created, location: @event
+      else
+        render json: @event.errors, status: :unprocessable_entity
+      end
     else
-      render json: @event.errors, status: :unprocessable_entity
+      render json: {message: "Отсутствует обязательное поле"}
     end
   end
 
