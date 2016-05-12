@@ -1,5 +1,5 @@
 class EventsController < ApplicationController
-  before_action :set_user, only: [:create]
+  before_action :set_user, only: [:create, :update]
   before_action :set_event, only: [:show, :update, :destroy]
 
   # GET /events
@@ -32,6 +32,10 @@ class EventsController < ApplicationController
 
   # PATCH/PUT /events/1
   def update
+    if params[:event][:is_participating]
+      @user.want_to_go(@event)
+      @event.is_participating = true
+    end
     if @event.update(event_params)
       render json: @event
     else

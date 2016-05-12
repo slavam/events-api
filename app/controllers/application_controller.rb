@@ -7,6 +7,10 @@ class ApplicationController < ActionController::API
     else
       user_id = params[:id]? params[:id] : params[:user_id]
     end
+    if user_id.nil?
+      render json: {message: "Authentication problem"}, status: :unprocessable_entity
+      return
+    end
     @user = User.find(user_id)
     token = request.env['HTTP_API_TOKEN']? request.env['HTTP_API_TOKEN'] : params[:api_token]
     unless @user.check_token(token)

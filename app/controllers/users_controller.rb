@@ -1,11 +1,11 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :update, :destroy, :i_want_to_go]
-  before_action :set_event, only: :i_want_to_go
+  before_action :set_user, only: [:show, :update, :destroy, :i_want_to_go, :index]
+  before_action :set_event, only: [:i_want_to_go, :index]
   
 
   # GET /users
   def index
-    @users = User.all
+    @users = @event.users.paginate(page: params[:page])
     # @feed_items = current_user.feed.paginate(page: params[:page])
     render json: @users
   end

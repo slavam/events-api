@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   put 'login', to: 'users#login'
   put 'i_want_to_go/:id', to: 'users#i_want_to_go'
   post 'registration', to: 'users#create'
+  get 'events/:event_id/participants', to: 'users#index'
   resources :users
   resources :events do
     resources :photos
