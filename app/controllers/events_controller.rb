@@ -100,16 +100,16 @@ class EventsController < ApplicationController
       params[:location]? params.require(:location).permit(:country, :city, :address, :lat, :lng) : {}
     end
     
-    def photos_as_array(event,per_page)
-      if params[:photos] == '1'
-        ps = []
-        event.photos.paginate(page: 1, per_page: per_page).each do|ph| 
-          ps << {id: ph.id, event_id: ph.event_id, is_liked: ph.liked?(@user), count_likes: ph.likings.count,
-          picture: ph.picture.url}
-        end
-        ps
-      else
-        nil
-      end
-    end
+    # def photos_as_array(event,per_page)
+    #   if params[:photos] == '1'
+    #     ps = []
+    #     event.photos.paginate(page: 1, per_page: per_page).each do|ph| 
+    #       ps << {id: ph.id, event_id: ph.event_id, is_liked: ph.liked?(@user), count_likes: ph.likings.count,
+    #       picture: ph.picture.url}
+    #     end
+    #     ps
+    #   else
+    #     nil
+    #   end
+    # end
 end

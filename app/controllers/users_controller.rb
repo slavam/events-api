@@ -42,7 +42,21 @@ class UsersController < ApplicationController
       @user.image_data(extention, data)
     end
     if @user.update(user_params)
-      render json: @user
+      created_events = Event.where(user_id: @user.id)
+      ces = []
+      created_events.each do|e| 
+        ces <<  event_to_hash(e, @user, 25)
+      end
+      participated_events = @user.events
+      pes = []
+      participated_events.each do|e| 
+        pes <<  event_to_hash(e, @user, 25)
+      end
+      full_user = user_to_hash(@user)
+      full_user[:created_events] = ces
+      full_user[:participated_events] = pes
+      render json: full_user
+      # render json: @user
     else
       render json: @user.errors, status: :unprocessable_entity
     end

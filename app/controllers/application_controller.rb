@@ -12,11 +12,11 @@ class ApplicationController < ActionController::API
       return
     end
     @user = User.find(user_id)
-    rescue ActiveRecord::RecordNotFound
-      if @user.nil?
-        render json: {message: "Пользователь не найден"}
-        return
-      end
+    # rescue ActiveRecord::RecordNotFound
+    #   if @user.nil?
+    #     render json: {message: "Пользователь не найден"}
+    #     return
+    #   end
 
     token = request.env['HTTP_API_TOKEN']? request.env['HTTP_API_TOKEN'] : params[:api_token]
     unless @user.check_token(token)
@@ -30,7 +30,9 @@ class ApplicationController < ActionController::API
       email: user.email, website: user.website, fb_url: user.fb_url, vk_url: user.vk_url,
       ok_url: user.ok_url, city: user.city, country: user.country, rating: user.rating,
       count_created_events: Event.where(user_id: user.id).count, 
-      count_participated_events: user.count_participated_events}
+      count_participated_events: user.count_participated_events,
+      created_events: nil, participated_events: nil
+    }
   end
   
   def event_to_hash(event, user, per_page)
@@ -40,4 +42,18 @@ class ApplicationController < ActionController::API
         created_at: event.created_at, count_participants: event.count_participants, count_comments: event.comments.count,
         tags: nil, author: user_to_hash(event.author), photos: photos_as_array(event, per_page), participants: nil, comments: nil}
   end
+  
+  def photos_as_array(event,per_page)
+    if params[:photos] == '1'
+      ps = []
+      event.photos.paginate(page: 1, per_page: per_page).each do|ph| 
+        ps << {id: ph.id, event_id: ph.event_id, is_liked: ph.liked?(@user), count_likes: ph.likings.count,
+        picture: ph.picture.url}
+      end
+      ps
+    else
+      nil
+    end
+  end
+
 end
