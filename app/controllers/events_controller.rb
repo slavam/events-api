@@ -6,25 +6,33 @@ class EventsController < ApplicationController
   def index
     page = params[:page]? params[:page].to_i : 1
     per_page= params[:per_page]? params[:per_page].to_i : 25
-    if params[:filter] and params[:filter][:is_participant]
-      events = @user.events
+    if params[:filter]
+      sql = "select e.* from events e "
+      participant = params[:filter][:is_participant]? " join participants p on p.event_id = e.id and p.user_id=#{@user.id} WHERE ": ""
+      author = params[:filter][:is_author]? " e.user_id = #{@user.id} AND " : ""
+      country = params[:filter][:country]? " e.country = '#{params[:filter][:country]}' AND ": ""
+      city = params[:filter][:city]? " e.city = '#{params[:filter][:city]}' AND ": ""
+      # start = " (e.date_start BETWEEN '?' AND '?') AND "
+      finish = " 1=1 "
+      q = sql + (params[:filter][:is_participant]? participant : " WHERE ") + author + country + city + finish
+      # render json: {message: q}
+      # events = Event.find_by_sql(q)
+      events = Event.paginate_by_sql(q, :page => page, :per_page => per_page)
+      
     else
       events = Event.all
     end
+# filter[date_from]: String (yyyy-mm-dd) - дата "С" выборки по периоду по датам начала событий (необязательно)
+# filter[date_to]: String (yyyy-mm-dd) - дата "ПО" выборки по периоду по датам начала событий (необязательно)
+# filter[tags]: Array - массив со строками тэгов событий (необязательно)
+# filter[name]
     es = []
-    events.paginate(page: page, per_page: per_page).each do|e| 
+    # events.paginate(page: page, per_page: per_page).each do|e| 
+    events.each do|e| 
       es <<  event_to_hash(e, @user, per_page)
-      # {id: e.id, name: e.name, description: e.description,
-      #   date_start: e.date_start, date_end: e.date_end, is_participating: e.participant?(@user),
-      #   location: {country: e.country, city: e.city, address: e.address, lat: e.lat, lng: e.lng},
-      #   created_at: e.created_at, count_participants: e.count_participants, count_comments: e.comments.count,
-      #   tags: nil, author: user_to_hash(e.author), photos: photos_as_array(e, per_page)}
     end
     last_page = ((events.count - per_page * page) <= 0)
     render json: {events: es, lastPage: last_page}
-    # render json: {message: page}
-    # @events = Event.all
-    # render json: @events
   end
 
   # GET /events/1
