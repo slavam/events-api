@@ -12,6 +12,12 @@ class ApplicationController < ActionController::API
       return
     end
     @user = User.find(user_id)
+    rescue ActiveRecord::RecordNotFound
+      if @user.nil?
+        render json: {message: "Пользователь не найден"}
+        return
+      end
+
     token = request.env['HTTP_API_TOKEN']? request.env['HTTP_API_TOKEN'] : params[:api_token]
     unless @user.check_token(token)
       render json: {message: "Authentication problem"}, status: :unprocessable_entity
