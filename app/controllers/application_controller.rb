@@ -32,4 +32,12 @@ class ApplicationController < ActionController::API
       count_created_events: Event.where(user_id: user.id).count, 
       count_participated_events: user.count_participated_events}
   end
+  
+  def event_to_hash(event, user, per_page)
+    {id: event.id, name: event.name, description: event.description,
+        date_start: event.date_start, date_end: event.date_end, is_participating: event.participant?(user),
+        location: {country: event.country, city: event.city, address: event.address, lat: event.lat, lng: event.lng},
+        created_at: event.created_at, count_participants: event.count_participants, count_comments: event.comments.count,
+        tags: nil, author: user_to_hash(event.author), photos: photos_as_array(event, per_page), participants: nil, comments: nil}
+  end
 end

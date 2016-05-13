@@ -13,11 +13,12 @@ class EventsController < ApplicationController
     end
     es = []
     events.paginate(page: page, per_page: per_page).each do|e| 
-      es << {id: e.id, name: e.name, description: e.description,
-        date_start: e.date_start, date_end: e.date_end, is_participating: e.participant?(@user),
-        location: {country: e.country, city: e.city, address: e.address, lat: e.lat, lng: e.lng},
-        created_at: e.created_at, count_participants: e.count_participants, count_comments: e.comments.count,
-        tags: nil, author: user_to_hash(e.author), photos: photos_as_array(e, per_page)}
+      es <<  event_to_hash(e, @user, per_page)
+      # {id: e.id, name: e.name, description: e.description,
+      #   date_start: e.date_start, date_end: e.date_end, is_participating: e.participant?(@user),
+      #   location: {country: e.country, city: e.city, address: e.address, lat: e.lat, lng: e.lng},
+      #   created_at: e.created_at, count_participants: e.count_participants, count_comments: e.comments.count,
+      #   tags: nil, author: user_to_hash(e.author), photos: photos_as_array(e, per_page)}
     end
     last_page = ((events.count - per_page * page) <= 0)
     render json: {events: es, lastPage: last_page}
@@ -62,7 +63,15 @@ class EventsController < ApplicationController
     end
     if @event.update(event_params) and @event.update(location_params)
       @event.is_participating = @event.participant?(@user)
-      render json: @event
+      # render json: @event
+      us = []
+      users = @event.users
+      users.each do|u| 
+        us << user_to_hash(u)
+      end
+      full_event = event_to_hash(@event, @user, 25)
+      full_event[:participants] = us
+      render json: full_event
     else
       render json: @event.errors, status: :unprocessable_entity
     end
