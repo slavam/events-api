@@ -12,9 +12,11 @@ class EventsController < ApplicationController
       author = params[:filter][:is_author]? " e.user_id = #{@user.id} AND " : ""
       country = params[:filter][:country]? " e.country = '#{params[:filter][:country]}' AND ": ""
       city = params[:filter][:city]? " e.city = '#{params[:filter][:city]}' AND ": ""
-      # start = " (e.date_start BETWEEN '?' AND '?') AND "
+      event_name = params[:filter][:name]? "e.name LIKE '%#{params[:filter][:name]}%' AND " : ""
+      start_date = (params[:filter][:date_from] and params[:filter][:date_to])? 
+        " (e.date_start BETWEEN '#{params[:filter][:date_from]}' AND '#{params[:filter][:date_to]}') AND " : ""
       finish = " 1=1 "
-      q = sql + (params[:filter][:is_participant]? participant : " WHERE ") + author + country + city + finish
+      q = sql + (params[:filter][:is_participant]? participant : " WHERE ") + author + country + city + event_name + start_date + finish
       # render json: {message: q}
       # events = Event.find_by_sql(q)
       events = Event.paginate_by_sql(q, :page => page, :per_page => per_page)
@@ -22,10 +24,7 @@ class EventsController < ApplicationController
     else
       events = Event.all
     end
-# filter[date_from]: String (yyyy-mm-dd) - дата "С" выборки по периоду по датам начала событий (необязательно)
-# filter[date_to]: String (yyyy-mm-dd) - дата "ПО" выборки по периоду по датам начала событий (необязательно)
 # filter[tags]: Array - массив со строками тэгов событий (необязательно)
-# filter[name]
     es = []
     # events.paginate(page: page, per_page: per_page).each do|e| 
     events.each do|e| 
