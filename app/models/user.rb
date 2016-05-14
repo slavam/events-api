@@ -28,6 +28,13 @@ class User < ApplicationRecord
   def want_to_go(event)
     participants.create(event_id: event.id, i_am_going: true) unless self.events.include?(event)
   end
+  
+  def i_am_not_going(event)
+    if self.was_here?(event)
+      p = Participant.where("event_id=? and user_id=?", event.id, id ).first
+      p.destroy
+    end
+  end
 
   # был там
   def visited(event)

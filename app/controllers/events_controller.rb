@@ -81,8 +81,13 @@ class EventsController < ApplicationController
   # PATCH/PUT /events/1
   def update
     if params[:event] and params[:event][:is_participating]
-      @user.want_to_go(@event)
-      @event.is_participating = true
+      if params[:event][:is_participating] == '1'  # i am going
+        @user.want_to_go(@event)
+        @event.is_participating = true
+      else  # i am not going
+        @user.i_am_not_going(@event)
+        @event.is_participating = false
+      end
     end
     if @event.update(event_params) and @event.update(location_params)
       @event.is_participating = @event.participant?(@user)
