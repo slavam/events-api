@@ -28,7 +28,9 @@ class UsersController < ApplicationController
     
     if @user.save
       @user.remember_token
-      render json: @user, status: :created, location: @user, serializer: UserWithTokenSerializer
+      u = user_to_hash(@user)
+      render json: {user: u, api_token: @user.code_token}
+      # render json: @user, status: :created, location: @user, serializer: UserWithTokenSerializer
     else
       render json: @user.errors, status: :unprocessable_entity
     end
