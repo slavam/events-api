@@ -37,7 +37,17 @@ class PhotosController < ApplicationController
     @photo.image_data(extention, data)
 
     if @photo.save
-      render json: @event.photos.paginate(page: 1) #, per_page: 10) #, status: :created, location: @photo
+      per_page = params[:per_page]? params[:per_page].to_i : 25
+      ps = []
+      @event.photos.paginate(page: 1, per_page: per_page).each do|ph| 
+        ps << {id: ph.id, event_id: ph.event_id, is_liked: ph.liked?(@user), count_likes: ph.likings.count,
+        picture: ph.picture.url, created_at: ph.created_at.to_datetime.strftime('%Y-%m-%d %H:%M')}
+      end
+      
+      last_page = ((@event.photos.count - per_page.to_i * 1) <= 0)
+      render json: {photos: ps, lastPage: last_page}
+      
+      # render json: @event.photos.paginate(page: 1) #, per_page: 10) #, status: :created, location: @photo
     else
       render json: @photo.errors, status: :unprocessable_entity
     end
