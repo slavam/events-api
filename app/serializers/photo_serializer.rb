@@ -1,5 +1,5 @@
 class PhotoSerializer < ActiveModel::Serializer
-  attributes :id, :event_id, :is_liked, :count_likes, :picture, created_at
+  attributes :id, :event_id, :is_liked, :count_likes, :picture, :created_at
   def picture
     object.picture.url
   end
