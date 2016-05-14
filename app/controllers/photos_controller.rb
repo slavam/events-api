@@ -46,7 +46,7 @@ class PhotosController < ApplicationController
   # PATCH/PUT /photos/1
   def update
     if params[:like]
-      if params[:like] == "true"
+      if params[:like] == "1"
         @photo.like_photo(@user)
       else
         @photo.dislike_photo(@user)

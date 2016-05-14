@@ -8,8 +8,24 @@ class EventsController < ApplicationController
     per_page= params[:per_page]? params[:per_page].to_i : 25
     if params[:filter]
       sql = "select e.* from events e "
-      participant = params[:filter][:is_participant]? " join participants p on p.event_id = e.id and p.user_id=#{@user.id} WHERE ": ""
-      author = params[:filter][:is_author]? " e.user_id = #{@user.id} AND " : ""
+      if params[:filter][:is_participant]
+        if params[:filter][:is_participant] == '1'
+          participant = " join participants p on p.event_id = e.id and p.user_id=#{@user.id} WHERE "
+        else
+          participant = " join participants p on p.event_id = e.id and p.user_id != #{@user.id} WHERE "
+        end
+      else
+        ""
+      end
+      if params[:filter][:is_author]
+        if params[:filter][:is_author] == '1'
+          author = " e.user_id = #{@user.id} AND "
+        else
+          author = " e.user_id != #{@user.id} AND "
+        end
+      else
+        author = ""
+      end
       country = params[:filter][:country]? " e.country = '#{params[:filter][:country]}' AND ": ""
       city = params[:filter][:city]? " e.city = '#{params[:filter][:city]}' AND ": ""
       event_name = params[:filter][:name]? "e.name LIKE '%#{params[:filter][:name]}%' AND " : ""
