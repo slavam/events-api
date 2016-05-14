@@ -48,7 +48,7 @@ class ApplicationController < ActionController::API
       ps = []
       event.photos.paginate(page: 1, per_page: per_page).each do|ph| 
         ps << {id: ph.id, event_id: ph.event_id, is_liked: ph.liked?(@user), count_likes: ph.likings.count,
-        picture: ph.picture.url}
+        picture: ph.picture.url, created_at: ph.created_at.strftime('%Y-%m-%d %H:%M')}
       end
       ps
     else
