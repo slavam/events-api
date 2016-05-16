@@ -31,7 +31,7 @@ class EventsController < ApplicationController
       event_name = params[:filter][:name]? "e.name LIKE '%#{params[:filter][:name]}%' AND " : ""
       start_date = (params[:filter][:date_from] and params[:filter][:date_to])? 
         " (e.date_start BETWEEN '#{params[:filter][:date_from]}' AND '#{params[:filter][:date_to]}') AND " : ""
-      finish = " 1=1 "
+      finish = " 1=1 " # order by e.created_at
       q = sql + (params[:filter][:is_participant]? participant : " WHERE ") + author + country + city + event_name + start_date + finish
       # render json: {message: q}
       # events = Event.find_by_sql(q)

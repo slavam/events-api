@@ -31,9 +31,11 @@ class PhotosController < ApplicationController
 
   # POST /photos
   def create
+    # render json: request.env['HTTP_USER_ID'] #{K: request.inspect }
+    
     extention = params[:picture].match(/\/(.+);/)[1]
     data = params[:picture].match(/,(.+)/)[1]
-    @photo = Photo.new(user_id: params[:user_id],event_id: params[:event_id])
+    @photo = Photo.new(user_id: @user.id, event_id: params[:event_id])
     @photo.image_data(extention, data)
 
     if @photo.save
@@ -99,4 +101,5 @@ class PhotosController < ApplicationController
       params.permit(:picture, :event_id, :user_id)
       # params.fetch(:photo, {})
     end
+    
 end

@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::API
   def set_user
+    
     if request.env['HTTP_USER_ID']
       user_id = request.env['HTTP_USER_ID']
     elsif params[:user_id]
@@ -7,16 +8,18 @@ class ApplicationController < ActionController::API
     else
       user_id = params[:id]? params[:id] : params[:user_id]
     end
+    
     if user_id.nil?
       render json: {message: "Authentication problem"}, status: :unprocessable_entity
       return
     end
     @user = User.find(user_id)
-    # rescue ActiveRecord::RecordNotFound
-    #   if @user.nil?
-    #     render json: {message: "Пользователь не найден"}
-    #     return
-    #   end
+    
+    # # rescue ActiveRecord::RecordNotFound
+    # #   if @user.nil?
+    # #     render json: {message: "Пользователь не найден"}
+    # #     return
+    # #   end
 
     token = request.env['HTTP_API_TOKEN']? request.env['HTTP_API_TOKEN'] : params[:api_token]
     unless @user.check_token(token)
@@ -52,6 +55,8 @@ class ApplicationController < ActionController::API
         picture: ph.picture.url, created_at: ph.created_at.strftime('%Y-%m-%d %H:%M')}
       end
       ps
+      # last_page = ((event.photos.count - per_page * 1) <= 0)
+      # {photos: ps, lastPage: last_page}
     else
       nil
     end
