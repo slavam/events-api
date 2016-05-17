@@ -99,6 +99,16 @@ class EventsController < ApplicationController
       end
       full_event = event_to_hash(@event, @user, 25)
       full_event[:participants] = us
+      cs = []
+      comments = @event.comments
+      # comments.paginate(page: page, per_page: per_page).each do|c| 
+      comments.each do|c| 
+        cs << comment_to_hash(c)
+      end
+    
+      # full_event[:comments] = {comments: cs, lastPage: (comments.count <= per_page * page)}
+      full_event[:comments] = cs
+      
       render json: full_event
     else
       render json: @event.errors, status: :unprocessable_entity
@@ -112,11 +122,6 @@ class EventsController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    # def set_event
-    #   @event = Event.find(params[:id])
-    #   rescue ActiveRecord::RecordNotFound
-    #     render json: {message: "Событие не найдено"}
-    # end
 
     # Only allow a trusted parameter "white list" through.
     def event_params
@@ -128,16 +133,4 @@ class EventsController < ApplicationController
       params[:location]? params.require(:location).permit(:country, :city, :address, :lat, :lng) : {}
     end
     
-    # def photos_as_array(event,per_page)
-    #   if params[:photos] == '1'
-    #     ps = []
-    #     event.photos.paginate(page: 1, per_page: per_page).each do|ph| 
-    #       ps << {id: ph.id, event_id: ph.event_id, is_liked: ph.liked?(@user), count_likes: ph.likings.count,
-    #       picture: ph.picture.url}
-    #     end
-    #     ps
-    #   else
-    #     nil
-    #   end
-    # end
 end
