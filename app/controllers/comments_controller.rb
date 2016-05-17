@@ -1,13 +1,22 @@
 class CommentsController < ApplicationController
   before_action :set_user, only: [:create]
-  before_action :set_event, only: [:create]
+  before_action :set_event, only: [:create, :index]
   before_action :set_comment, only: [:show, :update, :destroy]
 
   # GET /comments
   def index
-    @comments = Comment.all
-
-    render json: @comments
+    per_page = params[:per_page]? params[:per_page].to_i : 25
+    page = params[:page]? params[:page].to_i : 1
+    comments = @event.comments
+    cs = []
+    comments.paginate(page: page, per_page: per_page).each do|c| 
+      cs << comment_to_hash(c)
+    end
+    
+    last_page = (comments.count <= per_page * page)
+    render json: {comments: cs, lastPage: last_page}    
+    # @comments = Comment.all
+    # render json: @comments
   end
 
   # GET /comments/1
