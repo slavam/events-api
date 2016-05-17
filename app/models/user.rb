@@ -4,7 +4,7 @@ class User < ApplicationRecord
   has_many :events, through: :participants
   has_many :photos
   has_many :likings
-  has_many :comments
+  has_many :comments, :dependent => :destroy
   before_save { self.email = email.downcase }
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   validates :email, presence: true, length: { maximum: 255 },

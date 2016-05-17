@@ -1,5 +1,5 @@
 class CommentsController < ApplicationController
-  before_action :set_user, only: [:create]
+  before_action :set_user, only: [:create, :destroy]
   before_action :set_event, only: [:create, :index]
   before_action :set_comment, only: [:show, :update, :destroy]
 
@@ -49,13 +49,20 @@ class CommentsController < ApplicationController
 
   # DELETE /comments/1
   def destroy
-    @comment.destroy
+    if @user.id == @comment.author.id # ВЛ Только автор 2016.05.17
+      @comment.destroy
+      render json: {message: "deleted"}
+    else
+      render json: {message: "Удалять может только автор комментария"}
+    end
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_comment
       @comment = Comment.find(params[:id])
+      rescue ActiveRecord::RecordNotFound
+        render json: {message: "Комментарий не найден"}
     end
 
     # Only allow a trusted parameter "white list" through.

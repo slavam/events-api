@@ -6,7 +6,7 @@ class Event < ApplicationRecord
   has_many :taggings
   has_many :tags, through: :taggings
   has_many :photos
-  has_many :comments
+  has_many :comments, :dependent => :destroy
   default_scope -> { order(created_at: :desc) }
   validates :name, presence: true
   validates :date_start, presence: true
