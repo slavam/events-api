@@ -1,6 +1,5 @@
 class ApplicationController < ActionController::API
   def set_user
-    
     if request.env['HTTP_USER_ID']
       user_id = request.env['HTTP_USER_ID']
     elsif params[:user_id]
@@ -25,6 +24,21 @@ class ApplicationController < ActionController::API
     unless @user.check_token(token)
       render json: {message: "Authentication problem"}, status: :unprocessable_entity
     end
+  end
+  
+  def set_event
+    if params[:event_id]
+      event_id = params[:event_id]
+    else
+      event_id = params[:id]
+    end
+    if event_id.nil?
+      render json: {message: "Нет event_id"}, status: :unprocessable_entity
+      return
+    end
+    @event = Event.find(event_id)
+    rescue ActiveRecord::RecordNotFound
+      render json: {message: "Событие не найдено"}
   end
   
   def user_to_hash(user)

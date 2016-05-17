@@ -112,11 +112,11 @@ class EventsController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_event
-      @event = Event.find(params[:id])
-      rescue ActiveRecord::RecordNotFound
-        render json: {message: "Событие не найдено"}
-    end
+    # def set_event
+    #   @event = Event.find(params[:id])
+    #   rescue ActiveRecord::RecordNotFound
+    #     render json: {message: "Событие не найдено"}
+    # end
 
     # Only allow a trusted parameter "white list" through.
     def event_params

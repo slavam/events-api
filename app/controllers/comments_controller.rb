@@ -1,4 +1,6 @@
 class CommentsController < ApplicationController
+  before_action :set_user, only: [:create]
+  before_action :set_event, only: [:create]
   before_action :set_comment, only: [:show, :update, :destroy]
 
   # GET /comments
@@ -15,10 +17,13 @@ class CommentsController < ApplicationController
 
   # POST /comments
   def create
-    @comment = Comment.new(comment_params)
+    # @comment = Comment.new(comment_params)
+    @comment = @user.comments.build(comment_params)
+    @comment.event_id = @event.id
 
     if @comment.save
-      render json: @comment, status: :created, location: @comment
+      render json: comment_to_hash(@comment)
+      # render json: @comment, status: :created, location: @comment
     else
       render json: @comment.errors, status: :unprocessable_entity
     end
@@ -46,6 +51,16 @@ class CommentsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def comment_params
-      params.fetch(:comment, {})
+      # params.fetch(:comment, {})
+      params.permit(:content, :recipient_id)
     end
+    
+    def comment_to_hash(comment)
+      {id: comment.id, event_id: comment.event_id, author: user_to_hash(comment.author), 
+        recipient: comment.recipient_id ? user_to_hash(User.find(comment.recipient_id)) : nil, 
+        content: comment.content, created_at: comment.created_at.strftime('%Y-%m-%d %H:%M'),
+        
+      }
+    end
+    
 end
