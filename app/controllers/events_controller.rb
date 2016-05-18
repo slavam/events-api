@@ -26,13 +26,17 @@ class EventsController < ApplicationController
       else
         author = ""
       end
+      if params[:filter][:tags]
+        t = params[:filter][:tags].tr('[]','{}').tr(' ','')
+        tags = params[:filter][:tags] ? "('#{t}' && e.tags) and " : ""
+      end
       country = params[:filter][:country]? " e.country = '#{params[:filter][:country]}' AND ": ""
       city = params[:filter][:city]? " e.city = '#{params[:filter][:city]}' AND ": ""
       event_name = params[:filter][:name]? "e.name LIKE '%#{params[:filter][:name]}%' AND " : ""
       start_date = (params[:filter][:date_from] and params[:filter][:date_to])? 
         " (e.date_start BETWEEN '#{params[:filter][:date_from]}' AND '#{params[:filter][:date_to]}') AND " : ""
       finish = " 1=1 " # order by e.created_at
-      q = sql + (params[:filter][:is_participant]? participant : " WHERE ") + author + country + city + event_name + start_date + finish
+      q = sql + (params[:filter][:is_participant]? participant : " WHERE ") + author + country + city + event_name + start_date + tags + finish
       # render json: {message: q}
       # events = Event.find_by_sql(q)
       events = Event.paginate_by_sql(q, :page => page, :per_page => per_page)
@@ -64,7 +68,8 @@ class EventsController < ApplicationController
       @event = Event.new(name: params[:event][:name], description: params[:event][:description], 
         author: @user, date_start: params[:event][:date_time_start], date_end: params[:event][:date_time_end],
         country: params[:location][:country], city: params[:location][:city], 
-        address: params[:location][:address], lat: params[:location][:lat], lng: params[:location][:lng],)
+        tags: params[:event][:tags] ? params[:event][:tags].tr('[]','{}'). tr(' ', '') : [],
+        address: params[:location][:address], lat: params[:location][:lat], lng: params[:location][:lng])
   
       if @event.save
         @user.want_to_go(@event)
@@ -88,6 +93,11 @@ class EventsController < ApplicationController
         @user.i_am_not_going(@event)
         @event.is_participating = false
       end
+    end
+    if params[:event] and params[:event][:tags]
+      @event.tags = []
+      ts = params[:event][:tags].tr('[] ','').split(',')
+      ts.each {|t| @event.tags << t}
     end
     if @event.update(event_params) and @event.update(location_params)
       @event.is_participating = @event.participant?(@user)

@@ -58,7 +58,7 @@ class ApplicationController < ActionController::API
         is_participating: event.participant?(user),
         location: {country: event.country, city: event.city, address: event.address, lat: event.lat, lng: event.lng},
         created_at: event.created_at.strftime('%Y-%m-%d %H:%M'), count_participants: event.count_participants, count_comments: event.comments.count,
-        tags: nil, author: user_to_hash(event.author), photos: photos_as_array(event, per_page), participants: nil, comments: nil}
+        tags: event.tags, author: user_to_hash(event.author), photos: photos_as_array(event, per_page), participants: nil, comments: nil}
   end
   
   def photos_as_array(event,per_page)
