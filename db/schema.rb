@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160511073903) do
+ActiveRecord::Schema.define(version: 20160518141812) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,7 +29,7 @@ ActiveRecord::Schema.define(version: 20160511073903) do
   add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
 
   create_table "events", force: :cascade do |t|
-    t.string   "name",        null: false
+    t.string   "name",                     null: false
     t.string   "description"
     t.datetime "date_start"
     t.datetime "date_end"
@@ -39,11 +39,13 @@ ActiveRecord::Schema.define(version: 20160511073903) do
     t.string   "address"
     t.float    "lat"
     t.float    "lng"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
     t.integer  "user_id"
+    t.string   "tags",        default: [],              array: true
   end
 
+  add_index "events", ["tags"], name: "index_events_on_tags", using: :gin
   add_index "events", ["user_id"], name: "index_events_on_user_id", using: :btree
 
   create_table "likings", force: :cascade do |t|

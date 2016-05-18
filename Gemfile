@@ -6,6 +6,7 @@ gem 'bcrypt',               '3.1.7'
 gem 'will_paginate', github: 'jonatack/will_paginate'
 gem 'bootstrap-will_paginate', '0.0.10'
 gem 'pg', '~> 0.18'
+gem 'postgres_ext'
 
 gem 'geokit-rails'
 # Use Puma as the app server
