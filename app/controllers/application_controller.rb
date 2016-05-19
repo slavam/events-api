@@ -58,15 +58,18 @@ class ApplicationController < ActionController::API
         is_participating: event.participant?(user),
         location: {country: event.country, city: event.city, address: event.address, lat: event.lat, lng: event.lng},
         created_at: event.created_at.strftime('%Y-%m-%d %H:%M'), count_participants: event.count_participants, count_comments: event.comments.count,
-        tags: event.tags, author: user_to_hash(event.author), photos: photos_as_array(event, per_page), participants: nil, comments: nil}
+        tags: event.tags, author: user_to_hash(event.author), 
+        main_photo: event.photos ? photo_as_hash(event.photos.order(:id).first) : nil,
+        photos: photos_as_array(event, per_page), participants: nil, comments: nil}
   end
   
   def photos_as_array(event,per_page)
     if params[:photos] == '1'
       ps = []
       event.photos.paginate(page: 1, per_page: per_page).each do|ph| 
-        ps << {id: ph.id, event_id: ph.event_id, is_liked: ph.liked?(@user), count_likes: ph.likings.count,
-        picture: ph.picture.url, created_at: ph.created_at.strftime('%Y-%m-%d %H:%M')}
+        ps << photo_as_hash(ph)
+        # {id: ph.id, event_id: ph.event_id, is_liked: ph.liked?(@user), count_likes: ph.likings.count,
+        # picture: ph.picture.url, created_at: ph.created_at.strftime('%Y-%m-%d %H:%M')}
       end
       ps
       # last_page = ((event.photos.count - per_page * 1) <= 0)
@@ -74,6 +77,11 @@ class ApplicationController < ActionController::API
     else
       nil
     end
+  end
+    
+  def photo_as_hash(ph)
+    {id: ph.id, event_id: ph.event_id, is_liked: ph.liked?(@user), count_likes: ph.likings.count,
+      picture: ph.picture.url, created_at: ph.created_at.strftime('%Y-%m-%d %H:%M')}
   end
 
   def comment_to_hash(comment)
