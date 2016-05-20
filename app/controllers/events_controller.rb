@@ -115,7 +115,14 @@ class EventsController < ApplicationController
       comments.each do|c| 
         cs << comment_to_hash(c)
       end
-    
+      if @event.photos.count > 0 
+        ps = []
+        # @event.photos.paginate(page: 1, per_page: per_page).each do|ph| 
+        @event.photos.each do|ph| 
+          ps << photo_as_hash(ph)
+        end
+        full_event[:photos] = ps
+      end
       # full_event[:comments] = {comments: cs, lastPage: (comments.count <= per_page * page)}
       full_event[:comments] = cs
       
