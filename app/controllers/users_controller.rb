@@ -24,7 +24,31 @@ class UsersController < ApplicationController
 
   # POST /users
   def create
-    @user = User.new(user_params)
+    if params[:social_network]
+      if !params[:user_id]
+        render json: {message: "Нет ID пользователя в социальной сети"}, status: :unprocessable_entity
+        return
+      end
+      @user = User.where(uid: params[:user_id], provider: params[:social_network]).first
+      if !@user
+        @user = User.new(user_params)
+        # @user.email = 'test@test.com'
+        @user.password = '123'
+        @user.uid = params[:user_id]
+        @user.provider = params[:social_network]
+        if params[:user_pic]
+          extention = params[:user_pic].match(/\/(.+);/)[1]
+          data = params[:user_pic].match(/,(.+)/)[1]
+          @user.image_data(extention, data)        
+        end
+      end
+    else
+      if !params[:email] or !params[:password]
+        render json: {message: "Нет обязательных параметров"}, status: :unprocessable_entity
+        return
+      end
+      @user = User.new(user_params)
+    end
     
     if @user.save
       @user.remember_token
@@ -118,6 +142,8 @@ class UsersController < ApplicationController
       if params[:user]
         params.require(:user).permit(:first_name, :last_name, :email, 
         :phone, :website, :fb_url, :vk_url, :ok_url, :city, :country, :password)
+      elsif params[:social_network]
+        params.permit(:first_name, :last_name, :email)
       else
         params.permit(:first_name, :last_name, :email, 
         :phone, :website, :fb_url, :vk_url, :ok_url, :city, :country, :password)

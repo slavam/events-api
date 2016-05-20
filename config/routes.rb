@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   resources :tags
   put 'login', to: 'users#login'
   put 'i_want_to_go/:id', to: 'users#i_want_to_go'
+  post 'sociallogin', to: 'users#create'
   post 'registration', to: 'users#create'
   get 'events/:event_id/participants', to: 'users#index'
   resources :users
