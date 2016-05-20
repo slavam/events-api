@@ -74,7 +74,12 @@ class EventsController < ApplicationController
       if @event.save
         @user.want_to_go(@event)
         @event.is_participating = true
-        render json: @event, status: :created, location: @event
+        full_event = event_to_hash(@event, @user, 25)
+        us = []
+        us << user_to_hash(@user)
+        full_event[:participants] = us
+        render json: full_event
+        # render json: @event, status: :created, location: @event
       else
         render json: @event.errors, status: :unprocessable_entity
       end
