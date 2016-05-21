@@ -141,12 +141,12 @@ class UsersController < ApplicationController
     def user_params
       if params[:user]
         params.require(:user).permit(:first_name, :last_name, :email, 
-        :phone, :website, :fb_url, :vk_url, :ok_url, :city, :country, :password)
+        :phone, :website, :fb_url, :vk_url, :ok_url, :city, :country, :password, :lat, :lng)
       elsif params[:social_network]
         params.permit(:first_name, :last_name, :email)
       else
         params.permit(:first_name, :last_name, :email, 
-        :phone, :website, :fb_url, :vk_url, :ok_url, :city, :country, :password)
+        :phone, :website, :fb_url, :vk_url, :ok_url, :city, :country, :password, :lat, :lng)
       end
     end
 end

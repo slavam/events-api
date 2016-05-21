@@ -45,7 +45,8 @@ class ApplicationController < ActionController::API
     {id: user.id, created_at: user.created_at.strftime('%Y-%m-%d %H:%M'), first_name: user.first_name,
       last_name: user.last_name, picture: user.picture.url, phone: user.phone,
       email: user.email, website: user.website, fb_url: user.fb_url, vk_url: user.vk_url,
-      ok_url: user.ok_url, city: user.city, country: user.country, rating: user.rating,
+      ok_url: user.ok_url, city: user.city, country: user.country, 
+      lat: user.lat, lng: user.lng, rating: user.rating,
       count_created_events: Event.where(user_id: user.id).count, 
       count_participated_events: user.count_participated_events,
       created_events: nil, participated_events: nil
