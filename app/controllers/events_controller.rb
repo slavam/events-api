@@ -29,6 +29,8 @@ class EventsController < ApplicationController
       if params[:filter][:tags]
         t = params[:filter][:tags].tr('[]','{}').tr(' ','')
         tags = params[:filter][:tags] ? "('#{t}' && e.tags) and " : ""
+      else
+        tags = ""
       end
       country = params[:filter][:country]? " e.country = '#{params[:filter][:country]}' AND ": ""
       city = params[:filter][:city]? " e.city = '#{params[:filter][:city]}' AND ": ""
