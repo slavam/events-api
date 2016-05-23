@@ -67,7 +67,12 @@ class UsersController < ApplicationController
         render json: {message: "Нет обязательных параметров"}, status: :unprocessable_entity
         return
       end
-      @user = User.new(user_params)
+      if User.find_by(email: params[:email])
+        render json: {message: "Данный пользователь уже существует"}
+        return
+      else
+        @user = User.new(user_params)
+      end
     end
     
     if @user.save

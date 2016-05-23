@@ -12,7 +12,8 @@ class EventsController < ApplicationController
         if params[:filter][:is_participant] == '1'
           participant = " join participants p on p.event_id = e.id and p.user_id=#{@user.id} WHERE "
         else
-          participant = " join participants p on p.event_id = e.id and p.user_id != #{@user.id} WHERE "
+          participant = " WHERE e.id not in (select distinct(p.event_id) from participants p where p.user_id=#{@user.id}) AND "
+          # participant = " join participants p on p.event_id = e.id and p.user_id != #{@user.id} WHERE "
         end
       else
         ""
