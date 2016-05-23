@@ -43,7 +43,7 @@ class EventsController < ApplicationController
       # events = Event.find_by_sql(q)
       events = Event.paginate_by_sql(q, :page => page, :per_page => per_page)
       
-    else
+     else
       events = Event.all
     end
 # filter[tags]: Array - массив со строками тэгов событий (необязательно)
@@ -76,6 +76,16 @@ class EventsController < ApplicationController
       if @event.save
         @user.want_to_go(@event)
         @event.is_participating = true
+        if params[:event][:photos]
+          ps = params[:event][:photos].tr('[]','').split(' ')
+          ps.each do |p|
+            extention = p.match(/\/(.+);/)[1]
+            data = p.match(/,(.+)/)[1]
+            photo = Photo.new(user_id: @user.id, event_id: @event.id)
+            photo.image_data(extention, data)
+            photo.save
+          end
+        end
         full_event = event_to_hash(@event, @user, 25)
         us = []
         us << user_to_hash(@user)
