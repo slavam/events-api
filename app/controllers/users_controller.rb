@@ -49,6 +49,27 @@ class UsersController < ApplicationController
         render json: {message: "Нет ID пользователя в социальной сети"}, status: :unprocessable_entity
         return
       end
+      if params[:email]
+        @user = User.find_by(email: params[:email])
+        if @user #!!@user.authenticate(params[:password])
+          @user.remember_token
+          created_events = Event.where(user_id: @user.id)
+          ces = []
+          created_events.each do|e| 
+            ces <<  event_to_hash(e, @user, 25)
+          end
+          participated_events = @user.events
+          pes = []
+          participated_events.each do|e| 
+            pes <<  event_to_hash(e, @user, 25)
+          end
+          full_user = user_to_hash(@user)
+          full_user[:created_events] = ces
+          full_user[:participated_events] = pes
+          render json: {user: full_user, api_token: @user.code_token}
+          return
+        end
+      end
       @user = User.where(uid: params[:user_id], provider: params[:social_network]).first
       if !@user
         @user = User.new(user_params)
