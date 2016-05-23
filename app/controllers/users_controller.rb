@@ -7,8 +7,28 @@ class UsersController < ApplicationController
   def index
     page = params[:page]? params[:page].to_i : 1
     per_page= params[:per_page]? params[:per_page].to_i : 25
-    us = []
+    
     users = @event.users
+    
+    if params[:coordinates]
+      coords = params[:coordinates].tr('[] ','').split(',')
+      # from = Geokit::LatLng.new(coords[0], coords[1])
+      
+      users = @event.users.within(5, :units => :kms, :origin => coords)
+      # users.each do |u|
+      #   if u.lat and u.lng
+      #     to = Geokit::LatLng.new(u.lat, u.lng)
+      #     u.distance = from.distance_to( to, :units=>:kms )
+      #   end
+      # end
+      # users = users.select { |u| !u.distance.nil? and 0 < u.distance < 5 } 
+      # users.order(:distance)
+      # users = @event.users.where("distance < 5 and distance > 0").order(:distance)
+    end
+
+    
+    us = []
+    
     users.paginate(page: page, per_page: per_page).each do|u| 
       us << user_to_hash(u)
     end

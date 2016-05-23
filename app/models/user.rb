@@ -13,8 +13,14 @@ class User < ApplicationRecord
   # validates :email, uniqueness: { case_sensitive: false }
   has_secure_password
   mount_uploader :picture, PictureUploader
+  # attr_accessor :distance
   # validates :password, presence: true, length: { minimum: 6 }
   # validates :password, presence: false #, length: { minimum: 6 }
+  acts_as_mappable :default_units => :kms,
+                   :distance_field_name => :distance,
+                   :lat_column_name => :lat,
+                   :lng_column_name => :lng
+  
   
   def image_data(extention, data)
     # decode data and create stream on them
