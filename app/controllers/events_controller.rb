@@ -35,29 +35,27 @@ class EventsController < ApplicationController
       country = params[:filter][:country]? " e.country = '#{params[:filter][:country]}' AND ": ""
       city = params[:filter][:city]? " e.city = '#{params[:filter][:city]}' AND ": ""
       event_name = params[:filter][:name]? "e.name LIKE '%#{params[:filter][:name]}%' AND " : ""
-      start_date = (params[:filter][:date_from] and params[:filter][:date_to])? 
-        " (e.date_start BETWEEN '#{params[:filter][:date_from]}' AND '#{params[:filter][:date_to]}') AND " : ""
+      if (params[:filter][:date_from] and params[:filter][:date_to])
+        start_date = " (e.date_start BETWEEN '#{params[:filter][:date_from]}' AND '#{params[:filter][:date_to]}') AND "
+      elsif params[:filter][:date_from]
+        start_date = " (e.date_start > '#{params[:filter][:date_from]}') AND "
+      elsif params[:filter][:date_to]
+        start_date = " (e.date_start < '#{params[:filter][:date_to]}') AND "
+      else
+        start_date = ""
+      end
       finish = " 1=1 order by e.created_at desc "
       q = sql + (params[:filter][:is_participant]? participant : " WHERE ") + author + country + city + event_name + start_date + tags + finish
-      # q_dup = q.dup
-      # render json: {message: q}
-      events_by_sql = Event.find_by_sql(q)
-      events_count = events_by_sql.count
-      events = events_by_sql[(page-1)*per_page, per_page]
+      events_all = Event.find_by_sql(q)
       # events = Event.paginate_by_sql(q, :page => page, :per_page => per_page)
-      # render json: {message: "frozzen"} if q.frozen?
-      # return
      else
-      events = Event.all
-      events_count = events.count
+      events_all = Event.all
     end
-# filter[tags]: Array - массив со строками тэгов событий (необязательно)
+    events_count = events_all.count
+    events = events_all[(page-1)*per_page, per_page]
     es = []
     # events.paginate(page: page, per_page: per_page).each do|e| 
-    events.each do|e| 
-      es <<  event_to_hash(e, @user, per_page)
-    end
-    # last_page = ((events.count - per_page * page) <= 0)
+    events.each {|e| es <<  event_to_hash(e, @user, per_page)} if events # and events.count > 0
     render json: {events: es, count: events_count}
   end
 
