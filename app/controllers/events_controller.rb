@@ -19,7 +19,7 @@ class EventsController < ApplicationController
       end
       if params[:filter][:is_author]
         if params[:filter][:is_author] == '1'
-          author = " e.user_id = #{@user.id} AND "
+          author = " e.user_id = (#{@user.id}) AND "
         else
           author = " e.user_id != #{@user.id} AND "
         end
@@ -37,14 +37,19 @@ class EventsController < ApplicationController
       event_name = params[:filter][:name]? "e.name LIKE '%#{params[:filter][:name]}%' AND " : ""
       start_date = (params[:filter][:date_from] and params[:filter][:date_to])? 
         " (e.date_start BETWEEN '#{params[:filter][:date_from]}' AND '#{params[:filter][:date_to]}') AND " : ""
-      finish = " 1=1 " # order by e.created_at
+      finish = " 1=1 order by e.created_at desc "
       q = sql + (params[:filter][:is_participant]? participant : " WHERE ") + author + country + city + event_name + start_date + tags + finish
+      # q_dup = q.dup
       # render json: {message: q}
-      # events = Event.find_by_sql(q)
-      events = Event.paginate_by_sql(q, :page => page, :per_page => per_page)
-      
+      events_by_sql = Event.find_by_sql(q)
+      events_count = events_by_sql.count
+      events = events_by_sql[(page-1)*per_page, per_page]
+      # events = Event.paginate_by_sql(q, :page => page, :per_page => per_page)
+      # render json: {message: "frozzen"} if q.frozen?
+      # return
      else
       events = Event.all
+      events_count = events.count
     end
 # filter[tags]: Array - массив со строками тэгов событий (необязательно)
     es = []
@@ -52,8 +57,8 @@ class EventsController < ApplicationController
     events.each do|e| 
       es <<  event_to_hash(e, @user, per_page)
     end
-    last_page = ((events.count - per_page * page) <= 0)
-    render json: {events: es, lastPage: last_page}
+    # last_page = ((events.count - per_page * page) <= 0)
+    render json: {events: es, count: events_count}
   end
 
   # GET /events/1
