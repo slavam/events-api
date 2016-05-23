@@ -58,7 +58,8 @@ class ApplicationController < ActionController::API
         date_start: event.date_start.strftime('%Y-%m-%d %H:%M'), date_end: event.date_end ? event.date_end.strftime('%Y-%m-%d %H:%M') : event.date_end, 
         is_participating: event.participant?(user),
         location: {country: event.country, city: event.city, address: event.address, lat: event.lat, lng: event.lng},
-        created_at: event.created_at.strftime('%Y-%m-%d %H:%M'), count_participants: event.count_participants, count_comments: event.comments.count,
+        created_at: event.created_at.strftime('%Y-%m-%d %H:%M'), 
+        count_participants: event.count_participants, count_comments: event.comments.count, count_photos: event.photos.count,
         tags: event.tags.map{|t| t.force_encoding("UTF-8")}, author: user_to_hash(event.author), 
         main_photo: event.photos.count>0 ? photo_as_hash(event.photos.order(:id).first) : nil,
         photos: photos_as_array(event, per_page), participants: nil, comments: nil}
