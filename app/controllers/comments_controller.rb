@@ -13,8 +13,8 @@ class CommentsController < ApplicationController
       cs << comment_to_hash(c)
     end
     
-    last_page = (comments.count <= per_page * page)
-    render json: {comments: cs, lastPage: last_page}    
+    # last_page = (comments.count <= per_page * page)
+    render json: {comments: cs, count: comments.count}    
     # @comments = Comment.all
     # render json: @comments
   end

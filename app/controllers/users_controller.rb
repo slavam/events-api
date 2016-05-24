@@ -32,9 +32,8 @@ class UsersController < ApplicationController
     users.paginate(page: page, per_page: per_page).each do|u| 
       us << user_to_hash(u)
     end
-    last_page = ((users.count - per_page * page) <= 0)
-    render json: {participants: us, lastPage: last_page}
-    # params[:coordinates]
+    # last_page = ((users.count - per_page * page) <= 0)
+    render json: {participants: us, count: users.count}
   end
 
   # GET /users/1

@@ -8,20 +8,14 @@ class PhotosController < ApplicationController
   # GET /photos
   def index
     per_page = params[:per_page]? params[:per_page].to_i : 25
+    page = params[:page]? params[:page].to_i : 1
     @photos = @event.photos
     ps = []
-    @photos.paginate(page: params[:page], per_page: per_page).each do|ph| 
-      ps << {id: ph.id, event_id: ph.event_id, is_liked: ph.liked?(@user), count_likes: ph.likings.count,
-      picture: ph.picture.url, created_at: ph.created_at.to_datetime.strftime('%Y-%m-%d %H:%M')}
+    @photos.paginate(page: page, per_page: per_page).each do|ph| 
+      ps << photo_as_hash(ph)
     end
     
-    last_page = ((@photos.count - per_page.to_i * params[:page].to_i) <= 0)
-    render json: {photos: ps, lastPage: last_page}
-    # render json: {photos: @photos.paginate(page: params[:page], per_page: per_page), lastPage: last_page}
-    # render json: @photos.paginate(page: params[:page], per_page: per_page), serializer: ActiveModel::Serializer::ArraySerializer, each_serializer: Photo2Serializer
-    # render json: @photos.paginate(page: params[:page], per_page: per_page)
-    # render json: @photos.paginate(page: params[:page], per_page: per_page), serializer: ActiveModel::Serializer::ArraySerializer, each_serializer: Photo2Serializer
-    # render :json => @photos  , serializer: Photo2Serializer
+    render json: {photos: ps, count: @photos.count}
   end
 
   # GET /photos/1
@@ -40,14 +34,16 @@ class PhotosController < ApplicationController
 
     if @photo.save
       per_page = params[:per_page]? params[:per_page].to_i : 25
+      page = params[:page]? params[:page].to_i : 1
       ps = []
-      @event.photos.paginate(page: 1, per_page: per_page).each do|ph| 
-        ps << {id: ph.id, event_id: ph.event_id, is_liked: ph.liked?(@user), count_likes: ph.likings.count,
-        picture: ph.picture.url, created_at: ph.created_at.to_datetime.strftime('%Y-%m-%d %H:%M')}
+      @event.photos.paginate(page: page, per_page: per_page).each do|ph| 
+        ps << photo_as_hash(ph)
+        # ps << {id: ph.id, event_id: ph.event_id, is_liked: ph.liked?(@user), count_likes: ph.likings.count,
+        # picture: ph.picture.url, created_at: ph.created_at.to_datetime.strftime('%Y-%m-%d %H:%M')}
       end
       
-      last_page = ((@event.photos.count - per_page.to_i * 1) <= 0)
-      render json: {photos: ps, lastPage: last_page}
+      # last_page = ((@event.photos.count - per_page.to_i * 1) <= 0)
+      render json: {photos: ps, count: @event.photos.count}
       
       # render json: @event.photos.paginate(page: 1) #, per_page: 10) #, status: :created, location: @photo
     else
