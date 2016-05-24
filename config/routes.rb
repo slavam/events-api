@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   put 'i_want_to_go/:id', to: 'users#i_want_to_go'
   post 'sociallogin', to: 'users#create'
   post 'registration', to: 'users#create'
+  post 'recovery', to: 'users#recovery'
   get 'events/:event_id/participants', to: 'users#index'
   resources :users
   resources :events do

@@ -168,20 +168,27 @@ class UsersController < ApplicationController
     @user.destroy
   end
 
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    # def set_event
-    #   @event = Event.find(params[:event_id])
-    # end
-    
-    # def set_user
-    #   @user = User.find(params[:id])
-    #   token = request.env['HTTP_API_TOKEN']? request.env['HTTP_API_TOKEN'] : params[:api_token]
-    #   unless @user.check_token(token)
-    #     render json: {message: "Authentication problem"}, status: :unprocessable_entity
-    #   end
-    # end
+  def recovery
+    if params[:email]
+      @user = User.find_by(email: params[:email])
+      if @user
+        # ('a'..'z').to_a.shuffle[0..7].join
+        new_pw = User.new_token[0, 5]
+        @user.password_digest = User.digest(new_pw)
+        if @user.save
+          # send new_pw
+          render json: {message: "password was sent"}
+          # render json: {message: new_pw}
+        end
+      else
+        render json: {message: "Отсутствует пользователь с заданным почтовым адресом"}
+      end
+    else
+      render json: {message: "Отсутствует почтовый адрес"}
+    end
+  end
 
+  private
     # Only allow a trusted parameter "white list" through.
     def user_params
       if params[:user]
