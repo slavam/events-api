@@ -177,6 +177,8 @@ class UsersController < ApplicationController
         @user.password_digest = User.digest(new_pw)
         if @user.save
           # send new_pw
+          # @user.email = "mwm1955@gmail.com"
+          UserMailer.password_reset(@user, new_pw).deliver_now
           render json: {message: "password was sent"}
           # render json: {message: new_pw}
         end
