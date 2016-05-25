@@ -84,11 +84,11 @@ class UsersController < ApplicationController
       end
     else
       if !params[:email] or !params[:password]
-        render json: {message: "Нет обязательных параметров"}, status: :unprocessable_entity
+        render json: {message: "Нет обязательных параметров"}
         return
       end
       if User.find_by(email: params[:email])
-        render json: {message: "Данный пользователь уже существует"}
+        render json: {message: "Данный пользователь уже существует"}, status: :not_acceptable
         return
       else
         @user = User.new(user_params)
