@@ -159,7 +159,8 @@ class UsersController < ApplicationController
       render json: {user: full_user, api_token: @user.code_token}
       # render json: @user, status: :created, location: @user, serializer: UserWithTokenSerializer
     else
-      render json: @user.errors, status: :unprocessable_entity
+      render json: {message: "Неверный логин или пароль"}, status: :not_acceptable
+      # render json: @user.errors, status: :unprocessable_entity
     end
   end
 
