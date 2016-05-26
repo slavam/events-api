@@ -38,7 +38,32 @@ class UsersController < ApplicationController
 
   # GET /users/1
   def show
-    render json: @user
+    user = User.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      render json: {message: "Не найден заданный пользователь"}, status: :unprocessable_entity
+    else
+    if user
+      per_page= params[:per_page]? params[:per_page].to_i : 25
+      render json: {user: fill_user(user, per_page)} #, api_token: @user.code_token}    
+    end
+  end
+
+  def fill_user(user, per_page)
+    full_user = user_to_hash(user)
+    
+    created_events = Event.where(user_id: user.id)
+    ces = []
+    created_events.each do|e| 
+      ces <<  event_to_hash(e, user, per_page)
+    end
+    participated_events = user.events
+    pes = []
+    participated_events.each do|e| 
+      pes <<  event_to_hash(e, user, per_page)
+    end
+    full_user[:created_events] = ces
+    full_user[:participated_events] = pes
+    full_user
   end
 
   # POST /users
