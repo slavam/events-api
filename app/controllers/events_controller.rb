@@ -120,6 +120,8 @@ class EventsController < ApplicationController
       ts = params[:event][:tags].tr('[] ','').split(',')
       ts.each {|t| @event.tags << t}
     end
+    @event.date_start = params[:event][:date_time_start] if params[:event] and params[:event][:date_time_start]
+    @event.date_end = params[:event][:date_time_end] if params[:event] and params[:event][:date_time_end]
     if @event.update(event_params) and @event.update(location_params)
       @event.is_participating = @event.participant?(@user)
       # render json: @event
