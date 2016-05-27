@@ -51,12 +51,12 @@ class UsersController < ApplicationController
   def fill_user(user, per_page)
     full_user = user_to_hash(user)
     
-    created_events = Event.where(user_id: user.id)
+    created_events = Event.where(user_id: user.id).order(:date_start).reverse_order
     ces = []
     created_events.each do|e| 
       ces <<  event_to_hash(e, user, per_page)
     end
-    participated_events = user.events
+    participated_events = user.events.order(:date_start).reverse_order
     pes = []
     participated_events.each do|e| 
       pes <<  event_to_hash(e, user, per_page)
@@ -77,12 +77,12 @@ class UsersController < ApplicationController
         @user = User.find_by(email: params[:email])
         if @user #!!@user.authenticate(params[:password])
           @user.remember_token
-          created_events = Event.where(user_id: @user.id)
+          created_events = Event.where(user_id: @user.id).order(:date_start).reverse_order
           ces = []
           created_events.each do|e| 
             ces <<  event_to_hash(e, @user, 25)
           end
-          participated_events = @user.events
+          participated_events = @user.events.order(:date_start).reverse_order
           pes = []
           participated_events.each do|e| 
             pes <<  event_to_hash(e, @user, 25)
@@ -138,12 +138,12 @@ class UsersController < ApplicationController
       @user.image_data(extention, data)
     end
     if @user.update(user_params)
-      created_events = Event.where(user_id: @user.id)
+      created_events = Event.where(user_id: @user.id).order(:date_start).reverse_order
       ces = []
       created_events.each do|e| 
         ces <<  event_to_hash(e, @user, 25)
       end
-      participated_events = @user.events
+      participated_events = @user.events.order(:date_start).reverse_order
       pes = []
       participated_events.each do|e| 
         pes <<  event_to_hash(e, @user, 25)
@@ -167,12 +167,12 @@ class UsersController < ApplicationController
     @user = User.find_by(email: params[:email])
     if !!@user.authenticate(params[:password])
       @user.remember_token
-      created_events = Event.where(user_id: @user.id)
+      created_events = Event.where(user_id: @user.id).order(:date_start).reverse_order
       ces = []
       created_events.each do|e| 
         ces <<  event_to_hash(e, @user, 25)
       end
-      participated_events = @user.events
+      participated_events = @user.events.order(:date_start).reverse_order
       pes = []
       participated_events.each do|e| 
         pes <<  event_to_hash(e, @user, 25)

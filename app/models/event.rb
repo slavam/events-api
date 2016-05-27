@@ -5,9 +5,10 @@ class Event < ApplicationRecord
   belongs_to :author, :class_name => 'User', foreign_key: 'user_id'
   # has_many :taggings
   # has_many :tags, through: :taggings
-  has_many :photos
+  has_many :photos, :dependent => :destroy
   has_many :comments, :dependent => :destroy
-  # default_scope -> { order(created_at: :desc) }
+  # default_scope -> {  order('events.date_start DESC') }
+  # default_scope  { order(:date_start => :desc) }
   validates :name, presence: true
   validates :date_start, presence: true
   validates :user_id, presence: true
