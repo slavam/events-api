@@ -123,6 +123,16 @@ class EventsController < ApplicationController
     end
     @event.date_start = params[:event][:date_time_start] if params[:event] and params[:event][:date_time_start]
     @event.date_end = params[:event][:date_time_end] if params[:event] and params[:event][:date_time_end]
+    if params[:event] and params[:event][:photos]
+      ps = params[:event][:photos].tr('[]','').split(' ')
+      ps.each do |p|
+        extention = p.match(/\/(.+);/)[1]
+        data = p.match(/,(.+)/)[1]
+        photo = Photo.new(user_id: @user.id, event_id: @event.id)
+        photo.image_data(extention, data)
+        photo.save
+      end
+    end
     if @event.update(event_params) and @event.update(location_params)
       @event.is_participating = @event.participant?(@user)
       # render json: @event
