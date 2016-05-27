@@ -45,7 +45,8 @@ class EventsController < ApplicationController
       else
         start_date = ""
       end
-      finish = " 1=1 order by e.created_at desc "
+      # finish = " 1=1 order by e.created_at desc "
+      finish = " 1=1 order by e.date_start desc "
       q = sql + (params[:filter][:is_participant]? participant : " WHERE ") + author + country + city + event_name + start_date + tags + finish
       events_all = Event.find_by_sql(q)
       # events = Event.paginate_by_sql(q, :page => page, :per_page => per_page)
