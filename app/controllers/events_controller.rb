@@ -51,7 +51,7 @@ class EventsController < ApplicationController
       events_all = Event.find_by_sql(q)
       # events = Event.paginate_by_sql(q, :page => page, :per_page => per_page)
      else
-      events_all = Event.all
+      events_all = Event.all.order(:date_start).reverse_order
     end
     events_count = events_all.count
     events = events_all[(page-1)*per_page, per_page]
