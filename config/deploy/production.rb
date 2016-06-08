@@ -54,10 +54,14 @@
 server '37.143.15.90',
   user: 'events',
   roles: %w{web app},
-  ssh_options: {
+  ssh_options: { 
+    # keys: %w(~/.ssh/id_rsa)
+    # forward_agent: false 
+  }
+  # ssh_options: {
 #     user: 'user_name', # overrides user setting above
 #     keys: %w(/home/user_name/.ssh/id_rsa),
 #     forward_agent: false,
 #     auth_methods: %w(publickey password)
 #     # password: 'please use keys'
-  }
+  # }

@@ -1,3 +1,4 @@
+require 'capistrano/ssh_doctor'
 # Load DSL and set up stages
 require "capistrano/setup"
 

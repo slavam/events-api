@@ -2,7 +2,9 @@
 lock '3.5.0'
 
 set :application, 'events'
-set :repo_url, 'git@github.com:Moleculus/Events-API.git'
+set :repo_url, 'git@github.com:slavam/Events-API.git'
+# set :repo_url, 'git@github.com:Moleculus/Events-API.git'
+# set :repo_url,'https://slavam:atBesByn6@github.com/Moleculus/Events-API.git'
 set :user,            'events'
 
 # Default branch is :master
@@ -12,17 +14,22 @@ set :user,            'events'
 set :deploy_to, '/var/www/events'
 
 # Default value for :scm is :git
-# set :scm, :git
+set :scm, :git
+
+# set :deploy_via, "remote_cache"
 
 # Default value for :format is :airbrussh.
 # set :format, :airbrussh
+
+# set :ssh_options, { forward_agent: true, paranoid: true, keys: "~/.ssh/id_rsa" }
+# set :ssh_options,     { forward_agent: true, user: fetch(:user), keys: %w(~/.ssh/id_rsa.pub) }
 
 # You can configure the Airbrussh format using :format_options.
 # These are the defaults.
 # set :format_options, command_output: true, log_file: 'log/capistrano.log', color: :auto, truncate: :auto
 
 # Default value for :pty is false
-set :pty, true
+# set :pty, true
 
 # Default value for :linked_files is []
 # set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml')
@@ -43,6 +50,7 @@ namespace :deploy do
   task :check_revision do
     on roles(:app) do
       unless `git rev-parse HEAD` == `git rev-parse origin/master`
+      # unless `git rev-parse HEAD` == `git rev-parse ev_on_gh/master`
         puts "WARNING: HEAD is not the same as origin/master"
         puts "Run `git push` to sync changes."
         exit
