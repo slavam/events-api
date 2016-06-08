@@ -50,7 +50,8 @@
 # The server-based syntax can be used to override options:
 # ------------------------------------
 # server '91.218.231.68',
-server '127.0.0.1',
+# server '127.0.0.1',
+server '37.143.15.90',
   user: 'events',
   roles: %w{web app},
   ssh_options: {
