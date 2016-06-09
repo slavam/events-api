@@ -2,16 +2,15 @@
 lock '3.5.0'
 
 set :application, 'events'
-set :repo_url, 'git@github.com:slavam/Events-API.git'
+set :repo_url, 'git@github.com:slavam/events-api.git'
 # set :repo_url, 'git@github.com:Moleculus/Events-API.git'
-# set :repo_url,'https://slavam:atBesByn6@github.com/Moleculus/Events-API.git'
 set :user,            'events'
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
 # Default deploy_to directory is /var/www/my_app_name
-set :deploy_to, '/var/www/events'
+set :deploy_to, '/home/events'
 
 # Default value for :scm is :git
 set :scm, :git
@@ -23,6 +22,7 @@ set :scm, :git
 
 # set :ssh_options, { forward_agent: true, paranoid: true, keys: "~/.ssh/id_rsa" }
 # set :ssh_options,     { forward_agent: true, user: fetch(:user), keys: %w(~/.ssh/id_rsa.pub) }
+# set :ssh_options, { user: 'events', forward_agent: true, auth_methods: %w(publickey password) }
 
 # You can configure the Airbrussh format using :format_options.
 # These are the defaults.
@@ -49,8 +49,8 @@ namespace :deploy do
   desc "Make sure local git is in sync with remote."
   task :check_revision do
     on roles(:app) do
-      unless `git rev-parse HEAD` == `git rev-parse origin/master`
-      # unless `git rev-parse HEAD` == `git rev-parse ev_on_gh/master`
+      # unless `git rev-parse HEAD` == `git rev-parse origin/master`
+      unless `git rev-parse HEAD` == `git rev-parse my_ev_gh/master`
         puts "WARNING: HEAD is not the same as origin/master"
         puts "Run `git push` to sync changes."
         exit
@@ -76,4 +76,18 @@ namespace :deploy do
     end
   end
 
+end
+
+namespace :log do
+  namespace :tail do
+    desc "Show the production log"
+    task :app do
+      on roles(:app) do
+        run "tail -f #{shared_path}/log/production.log" do |channel, stream, data|
+          puts "#{data}"
+          break if stream == :err
+        end
+      end
+    end
+  end
 end
