@@ -23,6 +23,7 @@ set :scm, :git
 # set :ssh_options, { forward_agent: true, paranoid: true, keys: "~/.ssh/id_rsa" }
 # set :ssh_options,     { forward_agent: true, user: fetch(:user), keys: %w(~/.ssh/id_rsa.pub) }
 # set :ssh_options, { user: 'events', forward_agent: true, auth_methods: %w(publickey password) }
+set :ssh_options, {forward_agent: true, auth_methods: %w(publickey)}
 
 # You can configure the Airbrussh format using :format_options.
 # These are the defaults.
@@ -33,7 +34,7 @@ set :scm, :git
 
 # Default value for :linked_files is []
 # set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml')
-set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml')
+# set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml')
 
 # Default value for linked_dirs is []
 # set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'public/system')
@@ -41,6 +42,10 @@ set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', '
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
+set :default_env, { rvm_bin_path: '~/.rvm/bin' }
+# set :default_env, { path: "~/.rbenv/shims:~/.rbenv/bin:$PATH" }
+# SSHKit.config.command_map[:rake] = "#{fetch(:default_env)[:rvm_bin_path]}/rvm ruby-#{fetch(:rvm_ruby_version)} do bundle exec rake"
+# set :rvm_type, :system
 
 # Default value for keep_releases is 5
 # set :keep_releases, 5
@@ -51,6 +56,7 @@ namespace :deploy do
     on roles(:app) do
       # unless `git rev-parse HEAD` == `git rev-parse origin/master`
       unless `git rev-parse HEAD` == `git rev-parse my_ev_gh/master`
+      # unless `git rev-parse HEAD` == `git rev-parse ev_on_gh/master`
         puts "WARNING: HEAD is not the same as origin/master"
         puts "Run `git push` to sync changes."
         exit
@@ -91,3 +97,48 @@ namespace :log do
     end
   end
 end
+
+namespace :db do
+  desc "Create database yaml in shared path"
+  task :configure do
+    set :database do
+      Capistrano::CLI.password_prompt "Database: "
+    end
+
+    set :database_username do
+      Capistrano::CLI.password_prompt "Database Username: "
+    end
+
+    set :database_password do
+      Capistrano::CLI.password_prompt "Database Password: "
+    end
+
+    set :database_host do
+      Capistrano::CLI.password_prompt "Database Host: "
+    end
+
+    db_config = <<-EOF
+      production:
+        adapter: postgresql
+        encoding: unicode
+        pool: 5
+        database: events
+        username: events
+        password: mLSECDQwbe
+        host: www.events.2cubes.ru
+    EOF
+
+    on roles(:db) do
+      # run "mkdir -p  /home/events/shared/config/"
+      put db_config, " /home/events/shared/config/database.yml"
+    end
+  end
+
+  desc "Make symlink for database yaml"
+  task :symlink do
+    run "ln -nfs /home/events/shared/config/database.yml #{latest_release}/config/database.yml"
+  end
+end
+
+# before 'deploy:setup', 'db:configure'
+before 'deploy', 'db:configure'
