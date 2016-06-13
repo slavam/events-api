@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  # resources :comments
+  resources :comments
   # resources :photos
   resources :tags
   put 'login', to: 'users#login'
@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   post 'sociallogin', to: 'users#create'
   post 'registration', to: 'users#create'
   post 'recovery', to: 'users#recovery'
-  get 'events/:event_id/comments', to: 'comments#index'
+  # get 'events/:event_id/comments', to: 'comments#index'
   resources :events do
     resources :photos
     resources :comments
