@@ -29,6 +29,15 @@ class CommentsController < ApplicationController
     # @comment = Comment.new(comment_params)
     @comment = @user.comments.build(comment_params)
     @comment.event_id = @event.id
+    if params[:comment] and params[:comment][:recipient]
+      recipient_id = params[:comment][:recipient]
+    elsif params[:recipient]
+      recipient_id = params[:recipient]
+    else
+      recipient_id = nil
+    end
+        
+    @comment.recipient_id = recipient_id
 
     if @comment.save
       render json: comment_to_hash(@comment)

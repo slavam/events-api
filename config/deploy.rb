@@ -46,6 +46,7 @@ set :default_env, { rvm_bin_path: '~/.rvm/bin' }
 # set :default_env, { path: "~/.rbenv/shims:~/.rbenv/bin:$PATH" }
 # SSHKit.config.command_map[:rake] = "#{fetch(:default_env)[:rvm_bin_path]}/rvm ruby-#{fetch(:rvm_ruby_version)} do bundle exec rake"
 # set :rvm_type, :system
+set :rvm_ruby_version, '2.3.0@rails5.0'
 
 # Default value for keep_releases is 5
 # set :keep_releases, 5
@@ -134,10 +135,10 @@ namespace :db do
     end
   end
 
-  desc "Make symlink for database yaml"
-  task :symlink do
-    run "ln -nfs /home/events/shared/config/database.yml #{latest_release}/config/database.yml"
-  end
+  # desc "Make symlink for database yaml"
+  # task :symlink do
+  #   run "ln -nfs /home/events/shared/config/database.yml #{latest_release}/config/database.yml"
+  # end
 end
 
 # before 'deploy:setup', 'db:configure'
