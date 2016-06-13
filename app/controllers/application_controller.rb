@@ -86,7 +86,7 @@ class ApplicationController < ActionController::API
 
   def comment_to_hash(comment)
     {id: comment.id, event_id: comment.event_id, author: user_to_hash(comment.author),
-      recipient: (comment.recipient_id.nil? or comment.recipient_id.to_i < 1) ? nil : user_to_hash(User.find(comment.recipient_id)),
+      recipient: "<#{comment.recipient_id}>", #(comment.recipient_id.nil? or comment.recipient_id.to_i < 1) ? nil : user_to_hash(User.find(comment.recipient_id)),
       content: comment.content,
       created_at: comment.created_at.strftime('%Y-%m-%d %H:%M')
     }
