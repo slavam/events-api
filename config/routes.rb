@@ -7,13 +7,13 @@ Rails.application.routes.draw do
   post 'sociallogin', to: 'users#create'
   post 'registration', to: 'users#create'
   post 'recovery', to: 'users#recovery'
-  get 'events/:event_id/participants', to: 'users#index'
-  resources :users
   get 'events/:event_id/comments', to: 'comments#index'
   resources :events do
     resources :photos
     resources :comments
   end
+  get 'events/:event_id/participants', to: 'users#index'
+  resources :users
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   # Serve websocket cable requests in-process
