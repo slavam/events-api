@@ -27,7 +27,9 @@ class ApplicationController < ActionController::API
   end
   
   def set_event
-    if params[:event_id]
+    if request.env['HTTP_EVENT_ID']
+      event_id = request.env['HTTP_EVENT_ID']
+    elsif params[:event_id]
       event_id = params[:event_id]
     else
       event_id = params[:id]
