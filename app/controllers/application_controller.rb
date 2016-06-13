@@ -86,8 +86,11 @@ class ApplicationController < ActionController::API
 
   def comment_to_hash(comment)
     if comment.recipient_id
-      recp = User.find(comment.recipient_id)
-      # rescue ActiveRecord::RecordNotFound
+      if User.where(id: comment.recipient_id).empty?
+        recp = nil
+      else
+        recp = User.find(comment.recipient_id)
+      end
     end
     {id: comment.id, event_id: comment.event_id, author: user_to_hash(comment.author),
       recipient: recp ? user_to_hash(recp) : nil,
