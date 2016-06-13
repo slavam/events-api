@@ -8,10 +8,10 @@ class CommentsController < ApplicationController
     per_page = params[:per_page]? params[:per_page].to_i : 25
     page = params[:page]? params[:page].to_i : 1
     comments = @event.comments
-    cs = []
-    comments.paginate(page: page, per_page: per_page).each do|c| 
-      cs << comment_to_hash(c)
-    end
+    # cs = []
+    # comments.paginate(page: page, per_page: per_page).each do|c| 
+    #   cs << comment_to_hash(c)
+    # end
     
     # render json: {comments: cs, count: comments.count}    
     # @comments = Comment.all
