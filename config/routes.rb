@@ -8,8 +8,8 @@ Rails.application.routes.draw do
   post 'registration', to: 'users#create'
   post 'recovery', to: 'users#recovery'
   get 'events/:event_id/participants', to: 'users#index'
-  get 'events/:event_id/comments', to: 'comments#index'
   resources :users
+  get 'events/:event_id/comments', to: 'comments#index'
   resources :events do
     resources :photos
     resources :comments
