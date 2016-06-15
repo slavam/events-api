@@ -42,3 +42,4 @@ environment ENV.fetch("RAILS_ENV") { "development" }
 # on_worker_boot do
 #   ActiveRecord::Base.establish_connection if defined?(ActiveRecord)
 # end
+# directory '~/current'
